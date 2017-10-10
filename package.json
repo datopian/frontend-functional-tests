@@ -1,0 +1,20 @@
+{
+  "name": "functional-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "index.js": "node index.js checkWebsite status.csv",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "data.js": "^0.9.8",
+    "dotenv": "^4.0.0",
+    "json2csv": "^3.11.4",
+    "node-fetch": "^1.7.3",
+    "request-promise": "^4.2.2",
+    "stream-to-array": "^2.3.0"
+  }
+}
