@@ -6,7 +6,7 @@ const toArray = require('stream-to-array')
 const json2csv = require('json2csv')
 const fetch = require('node-fetch')
 
-class CoreTools {
+class CheckWebsite {
   constructor(rows) {
     // TODO: File.rows should do this for us ...
     this.headers = rows.shift()
@@ -19,11 +19,11 @@ class CoreTools {
     const res = data.File.load(statusCsvPath)
     let rows = await res.rows()
     rows = await toArray(rows)
-    return new CoreTools(rows)
+    return new CheckWebsite(rows)
   }
 
  
-  async checkWebsite(path_) {
+  async check(path_) {
     for (const statusObj of this.statuses) {
       const responsePage = await pageInfo()
       if (responsePage.status === 200) {
@@ -31,19 +31,19 @@ class CoreTools {
         let title = 'VIX - CBOE Volatility Index'
         let body = await responsePage.text()
         if (body.includes(title)) {
-          statusObj.dataset_title = 'ok'
+          statusObj.dataset_title = 'OK'
         } else {
-          statusObj.dataset_title = 'not ok'
+          statusObj.dataset_title = 'NOT OK'
         }
         if (body.includes('Read me')) {
-          statusObj.readme = 'ok'
+          statusObj.readme = 'OK'
         } else {
-          statusObj.readme = 'not ok'
+          statusObj.readme = 'NOT OK'
         }
       } else {
         statusObj.page_status = responsePage.status + ': ' + responsePage.statusText
-        statusObj.dataset_title = 'not ok'
-        statusObj.readme = 'not ok'
+        statusObj.dataset_title = 'NOT OK'
+        statusObj.readme = 'NOT OK'
       }
       
       const responseCsv = await csvLinks()
@@ -58,7 +58,7 @@ class CoreTools {
         let body = await responseDatapackage.text()
         body = JSON.parse(body)
         if ((body.resources).length === 4) {
-          statusObj.resources = 'ok'
+          statusObj.resources = 'OK'
         } else {
           statusObj.resources = 'resources missing'
         }
@@ -85,9 +85,9 @@ class CoreTools {
 }
 
 (async () => {
-  const tools = await CoreTools.load(process.argv[3])
-  if (process.argv[2] === 'checkWebsite') {
-    await tools.checkWebsite()
+  const tools = await CheckWebsite.load(process.argv[3])
+  if (process.argv[2] === 'check') {
+    await tools.check()
   }
 })()
 
@@ -129,4 +129,4 @@ const datapackageJson = async () => {
   return res
 }
 
-module.exports.CoreTools = CoreTools
+module.exports.CheckWebsite = CheckWebsite
