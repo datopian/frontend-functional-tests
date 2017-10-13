@@ -1,132 +1,146 @@
-require('dotenv').config()
 const fs = require('fs')
-const lodash = require('lodash')
-const data = require('data.js')
-const toArray = require('stream-to-array')
+
 const json2csv = require('json2csv')
+const cheerio = require('cheerio')
 const fetch = require('node-fetch')
 
-class CheckWebsite {
-  constructor(rows) {
-    // TODO: File.rows should do this for us ...
-    this.headers = rows.shift()
-    this.statuses = rows.map(row => {
-      return lodash.zipObject(this.headers, row)
-    })
+var newLine= "\r\n"
+const datasetsToTest = [
+  {
+    "owner": "core",
+    "name": "finance-vix"
+  },
+  {
+    "owner": "core",
+    "name": "gdp"
   }
+]
 
-  static async load(statusCsvPath) {
-    const res = data.File.load(statusCsvPath)
-    let rows = await res.rows()
-    rows = await toArray(rows)
-    return new CheckWebsite(rows)
-  }
+const baseUrl = 'https://datahub.io'
 
- 
-  async check(path_) {
-    for (const statusObj of this.statuses) {
-      const responsePage = await pageInfo()
-      if (responsePage.status === 200) {
-        statusObj.page_status = responsePage.status + ': ' + responsePage.statusText
-        let title = 'VIX - CBOE Volatility Index'
-        let body = await responsePage.text()
-        if (body.includes(title)) {
-          statusObj.dataset_title = 'OK'
-        } else {
-          statusObj.dataset_title = 'NOT OK'
-        }
-        if (body.includes('Read me')) {
-          statusObj.readme = 'OK'
-        } else {
-          statusObj.readme = 'NOT OK'
-        }
-      } else {
-        statusObj.page_status = responsePage.status + ': ' + responsePage.statusText
-        statusObj.dataset_title = 'NOT OK'
-        statusObj.readme = 'NOT OK'
-      }
-      
-      const responseCsv = await csvLinks()
-      statusObj.csv_links = responseCsv.status + ': ' + responseCsv.statusText
-    
-      const responseJson = await jsonLinks()
-      statusObj.json_links = responseJson.status + ': ' + responseJson.statusText
-      
-      const responseDatapackage = await datapackageJson()
-      if (responseDatapackage.status === 200) {
-        statusObj.datapackage_json = responseDatapackage.status + ': ' + responseDatapackage.statusText
-        let body = await responseDatapackage.text()
-        body = JSON.parse(body)
-        if ((body.resources).length === 4) {
-          statusObj.resources = 'OK'
-        } else {
-          statusObj.resources = 'resources missing'
-        }
-      }
-      
-      const responsePreviewLinks = await csvPreviewLinks()
-      statusObj.csv_preview_links = responsePreviewLinks.status + ': ' + responsePreviewLinks.statusText
-    }
-    this.save(path_)
-  }
-  
-  save(path_ = process.argv[3]) {
-    const fields = ['page_status','total_load_time','first_byte_load_time','html_load_time','data_load_time','page_title','dataset_title','readme','resources','download_links','csv_links','csv_preview_links','json_links','zip_links','zip_content','datapackage_json','tables','graphs']
-    const csv = json2csv({
-      data: this.statuses,
-      fields
-    })
-    fs.writeFile(path_, csv, err => {
+const checkPage = async (url) => {
+  const info = {}
+  const res = await fetch(url)
+  let body = await res.text()
+  info.status = res.status
+  info.htmlBody = body
+  return info
+}
+
+const datapackageJson = async (url) => {
+  const res = await fetch(url)
+  let body = await res.text()
+  body = JSON.parse(body)
+  return body
+}
+
+const resourceLinks = async (url) => {
+  const res = await fetch(url)
+  return res
+}
+
+const writeToCSV = async (fields, toCsv) => {
+  var csv = json2csv(toCsv) + newLine;
+
+  await fs.appendFile('status.csv', csv, err => {
       if (err) {
         console.log(err)
       }
-    })
+      console.log('The data appended to file!');
+  });
+}
+
+//checkShowcase page returns 200 and get html content
+datasetsToTest.forEach(async dataset => {
+  const statuses = {}
+  const date = new Date()
+  statuses.id = date.toISOString()
+  statuses.name = dataset.name
+  const showcaseUrl = `https://datahub.io/${dataset.owner}/${dataset.name}`
+  
+  // page status 
+  const page = await checkPage(showcaseUrl) //returns {status: statusCode, body: htmlBody}
+  statuses.page_status = page.status
+  if (page.status !== 200) {
+    // exit
+  } else {
+    const $ = cheerio.load(page.htmlBody)
+    let datackageUrl = `https://pkgstore.datahub.io/${dataset.owner}/${dataset.name}/latest/datapackage.json`
+    const dp = await datapackageJson(datackageUrl)
+    
+    // page title
+    let pageTitle = $('head').find('title').text()
+    if (pageTitle.includes(dp.title)) {
+      statuses.page_title = 'OK'
+    } else {
+      statuses.page_title = 'NOT OK'
+    }
+    
+    //dataset title
+    let datasetTitle = $('.showcase-page-header').find('h1').text()
+    if (datasetTitle.includes(dp.title)) {
+      statuses.dataset_title = 'OK'
+    } else {
+      statuses.dataset_title = 'NOT OK'
+    }
+    
+    // readme
+    let readme = $('.inner_container').find('#readme').text()
+    if (readme === 'Read me') {
+      statuses.readme = 'OK'
+    } else {
+      statuses.readme = 'NOT OK'
+    }
+    
+    // resources link
+    const resourcesLink = $('.resource-listing').find('a')
+    for (let i = 0; i < resourcesLink.length; i++) {
+      if (resourcesLink[i].attribs.href.startsWith('/')) {
+        switch(resourcesLink[i].attribs.href.substr(resourcesLink[i].attribs.href.lastIndexOf('.') + 1)) {
+          case 'csv':
+            let csvLinks = baseUrl + resourcesLink[i].attribs.href
+            const csvUrl = await resourceLinks(csvLinks)
+            statuses.csv_links = csvUrl.status + ':' + csvUrl.statusText
+            break;
+          case 'json':
+            let jsonLinks = baseUrl + resourcesLink[i].attribs.href
+            const jsonUrl = await resourceLinks(jsonLinks)
+            statuses.json_links = jsonUrl.status + ':' + jsonUrl.statusText
+            break;
+          case 'zip':
+            let zipLinks = baseUrl + resourcesLink[i].attribs.href
+            const zipUrl = await resourceLinks(zipLinks)
+            statuses.zip_links = zipUrl.status + ':' + zipUrl.statusText
+            break;
+        }
+      }
+    }
+    
+    // csv_preview_links
+    for (const idx in dp.resources) {
+      const resource = dp.resources[idx]
+      if (resource.datahub.type === 'derived/preview') {
+        const previewUrl = resource.path
+        const resPreview = await fetch(previewUrl)
+        statuses.csv_preview_links = resPreview.status + ': ' + resPreview.statusText
+      } 
+    }
+    
+    // datapackage_json
+    const datapackageLink = $('.container').find('.btn-default')
+    if ( datapackageLink.text() === 'Datapackage.json') {
+      let datapackageUrl = baseUrl + datapackageLink[0].attribs.href
+      const dpUrl = await resourceLinks(datapackageUrl)
+      statuses.datapackage_json = dpUrl.status + ':' + dpUrl.statusText
+    }
   }
-}
-
-(async () => {
-  const tools = await CheckWebsite.load(process.argv[3])
-  if (process.argv[2] === 'check') {
-    await tools.check()
+  
+  // append row into csv file
+  let fields = ["id","name","page_status","page_title","dataset_title","readme","csv_links","csv_preview_links","json_links","zip_links","datapackage_json","total_load_time","first_byte_load_time","html_load_time","data_load_time","zip_content","tables","graphs"]
+  var toCsv = {
+      data: statuses,
+      fields: fields,
+      hasCSVColumnTitle: false
   }
-})()
-
-
-
-const csvPreviewLinks = async () => {
-  const dpUrl = `https://pkgstore.datahub.io/core/finance-vix/latest/datapackage.json`
-  const res = await fetch(dpUrl)
-  let body = await res.text()
-  body = JSON.parse(body)
-  for (const idx in body.resources) {
-    const resource = body.resources[idx]
-    if (resource.datahub.type === 'derived/preview') {
-      const previewUrl = resource.path
-      const resPreview = await fetch(previewUrl)
-      return resPreview
-    } 
-  }
-}
-const csvLinks = async () => {
-  const url = 'https://datahub.io/core/finance-vix/r/vix-daily.csv'
-  const res = await fetch(url)
-  return res
-}
-const jsonLinks = async () => {
-  const url = `http://datahub.io/core/finance-vix/r/vix-daily.json`
-  const res = await fetch(url)
-  return res
-}
-const pageInfo = async () => {
-  const url = 'http://datahub.io/core/finance-vix'
-  const res = await fetch(url)
-  return res
-}
-
-const datapackageJson = async () => {
-  const url = 'https://pkgstore.datahub.io/core/finance-vix/latest/datapackage.json'
-  const res = await fetch(url)
-  return res
-}
-
-module.exports.CheckWebsite = CheckWebsite
+  const appentToStatus = await writeToCSV(fields, toCsv)
+})
