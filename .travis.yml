@@ -10,6 +10,6 @@ script: npm run check
 
 deploy:
   provider: script
-  script: npm run check
+  script: push.sh
   on:
     branch: master
