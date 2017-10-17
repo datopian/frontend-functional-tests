@@ -81,7 +81,12 @@ datasetsToTest.forEach(async dataset => {
     
   } else {
     const htmlBody = await pageContent(showcaseUrl)
-    const $ = await cheerio.load(htmlBody)
+    const $ = await cheerio.load(htmlBody, {
+      withDomLvl1: true,
+      normalizeWhitespace: false,
+      xmlMode: false,
+      decodeEntities: true
+    })
     let datackageUrl = `https://pkgstore.datahub.io/${dataset.owner}/${dataset.name}/latest/datapackage.json`
     const dp = await datapackageJson(datackageUrl)
     
