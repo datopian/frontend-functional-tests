@@ -1,5 +1,3 @@
-id,name,page_status,page_title,dataset_title,readme,csv_links,csv_preview_links,json_links,zip_links,datapackage_json,total_load_time,first_byte_load_time,html_load_time,data_load_time,zip_content,tables,graphs
-"2017-10-13T19:07:21.114Z","finance-vix",200,"OK","OK","OK","200:OK","200: OK","200:OK",,"200:OK",,,,,,,
-"2017-10-13T19:07:21.142Z","gdp",200,"OK","OK","OK","200:OK","200: OK","200:OK",,"200:OK",,,,,,,
-"2017-10-13T19:07:43.444Z","finance-vix",200,"OK","OK","OK","200:OK","200: OK","200:OK",,"200:OK",,,,,,,
-"2017-10-13T19:07:43.471Z","gdp",200,"OK","OK","OK","200:OK","200: OK","200:OK",,"200:OK",,,,,,,
+id,name,page_status,page_title,dataset_title,readme,csv_links,csv_preview_links,json_links,zip_links,datapackage_json,total_load_time,script_laod_time,layout_load_time,tables,graphs
+"2017-10-17T04:54:50.849Z","gdp-uk","200:OK","OK","OK","OK","200:OK","NOT GENERATED","200:OK","200:OK","200:OK",0.974701999974059,0.330183999998553,0.230553000001237,"OK","OK"
+"2017-10-17T04:54:50.872Z","gdp-us","200:OK","OK","OK","OK","200:OK","NOT GENERATED","200:OK","200:OK","200:OK",1.02930199997718,0.344549999972514,0.215803999988566,"OK","OK"
