@@ -115,7 +115,7 @@ datasetsToTest.forEach(async dataset => {
     }
     
     // resources link
-    const resourcesLink = $('.resource-listing').find('a')
+    const resourcesLink = await $('.resource-listing').find('a')
     for (let i = 0; i < resourcesLink.length; i++) {
       console.log(resourcesLink[i].attribs.href)
       if (resourcesLink[i].attribs.href.startsWith('/')) {
