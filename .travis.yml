@@ -8,8 +8,7 @@ install:
 
 script: npm run check
 
-deploy:
-- provider: script
-  script: scripts/push.sh
-  on:
-    branch: master
+after_success:
+  - scripts/push.sh
+  global:
+    secure: w8qgnV4Buj60mikgGDF5A2tEbq5vDebJSze+8Ld8BSrFxTllijtwMOu6l0+10LbsHx40Mt2an4oXmaxNMr26/9Kf02LbYG3S8lrrpyYkHswNBYsbjyb7Wl63aezP42TiQq2SEpSRudxEzqVaMOEoDP4FE1MU34nZtX9sDMj2VI5vhfBbF++0NHvuuGvk6y96nfZQnugPOi3Xde1Gr41XmCi5w1fpsOO8MojnfmiUyA4Z+Rp2OBKRbN915Pi0ZkAIqZ5WPEIehsm06Jyrwk2FMnfeUrR+ule9lochETF8tMreP06UdYjgDEGkloQH5FkWH2ZDewBZMCRwyyAhBODXvYO5LzjrS7PBQSiRi47HZA88ZQHrllsbAYgVN8zgnEMlSLisiN11mlGEJEG1wxNxfk+uAqDs0ndbisKQQqw3JwtJx0dY/9T8aSl9MOCP316G/qZJVJWsafd7GrQqvqie7KifchYWZMn1tsCzuO1K4M5+3X/yJH2RVwI53oAsI8EsPS8paExK/2Ju52f0dYdpk15XDhlrsRQS6zapqlzA6x/NUGQokwDDcSwBPxGIRuJ7/rP3kR/yMW64qQinLCAegbctZvJxe8S1K/5CvJ955s0h5Xho+tApNx1BMxLka9TZ8HTWXoDG3nySSbQ30fKHfg4m5irdK4MtLM+9Rzy695M=
