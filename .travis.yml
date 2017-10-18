@@ -9,7 +9,7 @@ install:
 script: npm run check
 
 deploy:
-  provider: script
+- provider: script
   script: scripts/push.sh
   on:
     branch: master
