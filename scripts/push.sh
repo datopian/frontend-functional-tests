@@ -11,7 +11,7 @@ commit_website_files() {
 }
 
 upload_files() {
-  git push --force https://${GH_TOKEN}@github.com/datahq/frontend-functional-tests.git > /dev/null 2>&1
+  git push --quite https://${GH_TOKEN}@github.com/datahq/frontend-functional-tests.git > /dev/null 2>&1
 }
 
 setup_git

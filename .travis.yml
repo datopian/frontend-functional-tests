@@ -6,5 +6,8 @@ before_install:
 install:
 - npm install
 script: npm run check
-after_success:
-- scripts/push.sh
+deploy:
+  provider: script
+  script: scripts/push.sh
+  on:
+    branch: master
