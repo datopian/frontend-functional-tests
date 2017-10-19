@@ -7,16 +7,6 @@ const puppeteer = require('puppeteer');
 
 
 let newLine= "\r\n"
-const datasetsToTest = [
-  {
-    "owner": "core",
-    "name": "gdp-uk"
-  },
-  {
-    "owner": "core",
-    "name": "gdp-us"
-  }
-]
 
 const baseUrl = 'https://datahub.io'
 
@@ -44,7 +34,11 @@ const pageLoadTime = async (url) => {
 const pageContent = async (url) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
-  await page.goto(url)
+  await page.goto(url, {
+    networkIdleTimeout: 5000,
+    waitUntil: 'networkidle',
+    timeout: 0
+  })
   let content = await page.content()
   await browser.close()
   return content
@@ -67,13 +61,12 @@ const writeToCSV = (statuses) => {
   })
 }
 
-datasetsToTest.forEach(async dataset => {
+const frontendStatus = async (dataset,baseUrl,newLine) => {
   const statuses = {}
   const date = new Date()
   statuses.id = date.toISOString()
   statuses.name = dataset.name
   const showcaseUrl = `https://datahub.io/${dataset.owner}/${dataset.name}`
-  
   // page status 
   const page = await checkPage(showcaseUrl)
   statuses.page_status = page.status + ':' + page.statusText
@@ -87,8 +80,8 @@ datasetsToTest.forEach(async dataset => {
       xmlMode: false,
       decodeEntities: true
     })
-    let datackageUrl = `https://pkgstore.datahub.io/${dataset.owner}/${dataset.name}/latest/datapackage.json`
-    const dp = await datapackageJson(datackageUrl)
+    let datapackageUrl = `https://pkgstore.datahub.io/${dataset.owner}/${dataset.name}/latest/datapackage.json`
+    const dp = await datapackageJson(datapackageUrl)
     
     // page title
     let pageTitle = $('head').find('title').text()
@@ -115,9 +108,8 @@ datasetsToTest.forEach(async dataset => {
     }
     
     // resources link
-    const resourcesLink = await $('.resource-listing').find('a')
+    const resourcesLink = $('.resource-listing').find('a')
     for (let i = 0; i < resourcesLink.length; i++) {
-      console.log(resourcesLink[i].attribs.href)
       if (resourcesLink[i].attribs.href.startsWith('/')) {
         switch(resourcesLink[i].attribs.href.substr(resourcesLink[i].attribs.href.lastIndexOf('.') + 1)) {
           case 'csv':
@@ -145,7 +137,7 @@ datasetsToTest.forEach(async dataset => {
       if (resource.datahub.type === 'derived/preview') {
         const previewUrl = resource.path
         const resPreview = await fetch(previewUrl)
-        statuses.csv_preview_links = resPreview.status + ': ' + resPreview.statusText
+        statuses.csv_preview_links = resPreview.status + ':' + resPreview.statusText
       } else if (!statuses.csv_preview_links){
         statuses.csv_preview_links ='NOT GENERATED'
       }
@@ -174,7 +166,6 @@ datasetsToTest.forEach(async dataset => {
     
     // tables
     const table = $('.htCore').find('tr').length
-    console.log(table)
     if (table > 2) {
       statuses.tables = 'OK'
     } else {
@@ -183,6 +174,11 @@ datasetsToTest.forEach(async dataset => {
   }  
   
   // append row into csv file
+  //const appentToStatus = writeToCSV(statuses) 
+  return statuses
+}
 
-  const appentToStatus = writeToCSV(statuses)
-})
+
+module.exports = {
+  frontendStatus
+}
