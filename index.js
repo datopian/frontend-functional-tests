@@ -157,12 +157,18 @@ const frontendStatus = async (dataset,baseUrl,newLine) => {
     statuses.layout_load_time = loadTime.LayoutDuration
     
     // graphs
-    const graphC = $('.svg-container').css()
-    if (graphC.position === 'relative' && graphC.width === '670px' && graphC.height === '450px') {
-      statuses.graphs = 'OK'
-    } else {
+    try {
+      const graphC = $('.svg-container').css()
+      if (graphC.position === 'relative' && graphC.width === '670px' && graphC.height === '450px') {
+        statuses.graphs = 'OK'
+      } else {
+        statuses.graphs = 'NOT OK'
+      }
+    } catch (e) {
       statuses.graphs = 'NOT OK'
     }
+    
+    
     
     // tables
     const table = $('.htCore').find('tr').length
