@@ -8,7 +8,6 @@ const puppeteer = require('puppeteer');
 
 let newLine= "\r\n"
 
-const baseUrl = 'https://datahub.io'
 
 const checkPage = async (url) => {
   const res = await fetch(url)
@@ -35,7 +34,7 @@ const pageContent = async (url) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(url, {
-    networkIdleTimeout: 5000,
+    networkIdleTimeout: 10000,
     waitUntil: 'networkidle',
     timeout: 0
   })
@@ -61,12 +60,12 @@ const writeToCSV = (statuses) => {
   })
 }
 
-const frontendStatus = async (dataset,baseUrl,newLine) => {
+const frontendStatus = async (dataset,baseUrl,pkgStoreUrl,newLine) => {
   const statuses = {}
   const date = new Date()
   statuses.id = date.toISOString()
   statuses.name = dataset.name
-  const showcaseUrl = `https://datahub.io/${dataset.owner}/${dataset.name}`
+  const showcaseUrl = `${baseUrl}/${dataset.owner}/${dataset.name}`
   // page status 
   const page = await checkPage(showcaseUrl)
   statuses.page_status = page.status + ':' + page.statusText
@@ -80,7 +79,7 @@ const frontendStatus = async (dataset,baseUrl,newLine) => {
       xmlMode: false,
       decodeEntities: true
     })
-    let datapackageUrl = `https://pkgstore.datahub.io/${dataset.owner}/${dataset.name}/latest/datapackage.json`
+    let datapackageUrl = `${pkgStoreUrl}/${dataset.owner}/${dataset.name}/latest/datapackage.json`
     const dp = await datapackageJson(datapackageUrl)
     
     // page title
