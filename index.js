@@ -34,7 +34,7 @@ const pageContent = async (url) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(url, {
-    networkIdleTimeout: 10000,
+    networkIdleTimeout: 7000,
     waitUntil: 'networkidle',
     timeout: 0
   })
