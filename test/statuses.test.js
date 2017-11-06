@@ -19,6 +19,7 @@ const pkgStoreUrl = 'https://pkgstore.datahub.io'
 const baseUrlTesting = 'https://testing.datahub.io'
 const pkgStoreTestingUrl = 'https://pkgstore-testing.datahub.io'
 
+
 test('finance-vix works on production', async t => {
   const status = await frontendStatus(datasetsToTest[0],baseUrl,pkgStoreUrl,newLine)
   t.is(status.name, 'finance-vix')

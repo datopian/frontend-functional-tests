@@ -24,7 +24,11 @@ const datapackageJson = async (url) => {
 const pageLoadTime = async (url) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
-  await page.goto(url)
+  await page.goto(url, {
+    networkIdleTimeout: 5000,
+    waitUntil: 'networkidle',
+    timeout: 0
+  })
   let metrics = await page.getMetrics()
   await browser.close()
   return metrics
@@ -34,7 +38,7 @@ const pageContent = async (url) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(url, {
-    networkIdleTimeout: 20000,
+    networkIdleTimeout: 10000,
     waitUntil: 'networkidle',
     timeout: 0
   })
