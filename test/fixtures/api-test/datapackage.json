@@ -1,0 +1,36 @@
+{
+  "name": "test-data-package-for-api-test",
+  "title": "Test data package for API test",
+  "resources": [
+    {
+      "name": "data",
+      "path": "data/data.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "Date",
+            "type": "date",
+            "description": ""
+          },
+          {
+            "name": "a",
+            "type": "number",
+            "description": ""
+          },
+          {
+            "name": "b",
+            "type": "number",
+            "description": ""
+          },
+          {
+            "name": "c",
+            "type": "number",
+            "description": ""
+          }
+        ]
+      }
+    }
+  ]
+}
