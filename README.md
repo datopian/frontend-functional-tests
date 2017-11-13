@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/datahq/frontend-functional-tests.svg?branch=master)](https://travis-ci.org/datahq/frontend-functional-tests)
 
-Functional testing for frontend
+Functional testing for frontend and API testing for all services
 
-## Usage
+## Usage for functional testing for frontend
 
 * Tests will be automatically run by travis daily. It tests only `finance-vix` and `gdp-uk` core datasets.
   * If travis build fails, we can check it on travis logs
@@ -27,5 +27,27 @@ Functional testing for frontend
   | tables | preview table | OK OR NOT OK |
   | graphs | graph | OK OR NOT OK |
   
+## Usage for API testing for all services
 
+Tests will be automatically run by travis daily.
+Environmental vairables to set up:
+`DOMAIN` - domain address
+`AUTH_TOKEN` - Authorization token
+`AUTH_TOKEN_PERMISSION` - Permission token for a service, in our case `rawstore`
+`OWNERID` - ownerid, in this test, we use `examples`
+`DATAPACKAGE_NAME` - data package name, we use sample data package `test-data-package-for-api-test`
+
+It tests API for the following services:
+* specstore status
+* specstore info
+* specstore upload
+* auth permission for a service
+* auth check an authentication token validity
+* auth change the username
+* auth receive authorization public key
+* metastore search
+* metastore search events
+* resolver username to userid
+* bitstore(rawstore) get authorized upload URL
+* bitstore(rawstore) get information regarding the datastore
 
