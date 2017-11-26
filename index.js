@@ -9,13 +9,13 @@ const puppeteer = require('puppeteer');
 let newLine= "\r\n"
 
 
-const checkPage = async (url) => {
-  const res = await fetch(url)
+const checkPage = async (url, options={}) => {
+  const res = await fetch(url, options)
   return res
 }
 
-const datapackageJson = async (url) => {
-  const res = await fetch(url)
+const datapackageJson = async (url, options={}) => {
+  const res = await fetch(url, options)
   let body = await res.text()
   body = JSON.parse(body)
   return body
@@ -34,11 +34,17 @@ const pageLoadTime = async (url) => {
   return metrics
 }
 
-const pageContent = async (url) => {
+const pageContent = async (url, options) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
+  await page.setCookie({
+    name: 'jwt',
+    value: `${process.env.AUTH_TOKEN}`,
+    url: url
+  })
   await page.goto(url, {
     networkIdleTimeout: 10000,
+    networkIdleInflight: 20,
     waitUntil: 'networkidle',
     timeout: 0
   })
@@ -64,18 +70,16 @@ const writeToCSV = (statuses) => {
   })
 }
 
-const frontendStatus = async (dataset,baseUrl,pkgStoreUrl,newLine) => {
+const frontendStatus = async (dataset,baseUrl,pkgStoreUrl,newLine,options) => {
   const statuses = {}
   const date = new Date()
   statuses.id = date.toISOString()
   statuses.name = dataset.name
   const showcaseUrl = `${baseUrl}/${dataset.owner}/${dataset.name}`
   // page status 
-  const page = await checkPage(showcaseUrl)
+  const page = await checkPage(showcaseUrl, options)
   statuses.page_status = page.status + ':' + page.statusText
-  if (page.status !== 200) {
-    
-  } else {
+  if (page.status === 200) {
     const htmlBody = await pageContent(showcaseUrl)
     const $ = await cheerio.load(htmlBody, {
       withDomLvl1: true,
@@ -83,8 +87,9 @@ const frontendStatus = async (dataset,baseUrl,pkgStoreUrl,newLine) => {
       xmlMode: false,
       decodeEntities: true
     })
-    let datapackageUrl = `${pkgStoreUrl}/${dataset.owner}/${dataset.name}/latest/datapackage.json`
-    const dp = await datapackageJson(datapackageUrl)
+    
+    let datapackageUrl = `${baseUrl}/${dataset.owner}/${dataset.name}/datapackage.json`
+    const dp = await datapackageJson(datapackageUrl, options)
     
     // page title
     let pageTitle = $('head').find('title').text()
@@ -117,32 +122,20 @@ const frontendStatus = async (dataset,baseUrl,pkgStoreUrl,newLine) => {
         switch(resourcesLink[i].attribs.href.substr(resourcesLink[i].attribs.href.lastIndexOf('.') + 1)) {
           case 'csv':
             let csvLinks = baseUrl + resourcesLink[i].attribs.href
-            const csvUrl = await checkPage(csvLinks)
+            const csvUrl = await checkPage(csvLinks, options)
             statuses.csv_links = csvUrl.status + ':' + csvUrl.statusText
             break;
           case 'json':
             let jsonLinks = baseUrl + resourcesLink[i].attribs.href
-            const jsonUrl = await checkPage(jsonLinks)
+            const jsonUrl = await checkPage(jsonLinks, options)
             statuses.json_links = jsonUrl.status + ':' + jsonUrl.statusText
             break;
           case 'zip':
             let zipLinks = baseUrl + resourcesLink[i].attribs.href
-            const zipUrl = await checkPage(zipLinks)
+            const zipUrl = await checkPage(zipLinks, options)
             statuses.zip_links = zipUrl.status + ':' + zipUrl.statusText
             break;
         }
-      }
-    }
-    
-    // csv_preview_links
-    for (const idx in dp.resources) {
-      const resource = dp.resources[idx]
-      if (resource.datahub.type === 'derived/preview') {
-        const previewUrl = resource.path
-        const resPreview = await fetch(previewUrl)
-        statuses.csv_preview_links = resPreview.status + ':' + resPreview.statusText
-      } else if (!statuses.csv_preview_links){
-        statuses.csv_preview_links ='NOT GENERATED'
       }
     }
     
@@ -150,7 +143,7 @@ const frontendStatus = async (dataset,baseUrl,pkgStoreUrl,newLine) => {
     const datapackageLink = $('.container').find('.btn-default')
     if ( datapackageLink.text() === 'Datapackage.json') {
       let datapackageUrl = baseUrl + datapackageLink[0].attribs.href
-      const dpUrl = await checkPage(datapackageUrl)
+      const dpUrl = await checkPage(datapackageUrl, options)
       statuses.datapackage_json = dpUrl.status + ':' + dpUrl.statusText
     }
     // page loading time 
