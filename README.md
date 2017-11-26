@@ -17,7 +17,6 @@ Functional testing for frontend and API testing for all services
   | dataset_title | dataset title | OK OR NOT OK |
   | readme | readme | OK OR NOT OK |
   | csv_links | all csv links  | status code and description |
-  | csv_preview_links | csv preview links | status code and description |
   | json_links | json links | status code and description |
   | zip_links | zip links | status code and description |
   | datapackage_json | datapackage.json | status code and description |

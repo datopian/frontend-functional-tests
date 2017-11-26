@@ -1,4 +1,5 @@
 const test = require('ava')
+require('dotenv').config()
 
 const {frontendStatus} = require('../index.js')
 
@@ -11,6 +12,10 @@ const datasetsToTest = [
   {
     "owner": "core",
     "name": "gdp-uk"
+  },
+  {
+    "owner": "Mikanebu",
+    "name": "finance-vix-private"
   }
 ]
 
@@ -28,7 +33,6 @@ test('finance-vix works on production', async t => {
   t.is(status.dataset_title, 'OK')
   t.is(status.readme, 'OK')
   t.is(status.csv_links, '200:OK')
-  t.is(status.csv_preview_links, '200:OK')
   t.is(status.json_links, '200:OK')
   t.is(status.zip_links, '200:OK')
   t.is(status.datapackage_json, '200:OK')
@@ -44,7 +48,6 @@ test('finance-vix works on testing', async t => {
   t.is(status.dataset_title, 'OK')
   t.is(status.readme, 'OK')
   t.is(status.csv_links, '200:OK')
-  t.is(status.csv_preview_links, '200:OK')
   t.is(status.json_links, '200:OK')
   t.is(status.zip_links, '200:OK')
   t.is(status.datapackage_json, '200:OK')
@@ -53,3 +56,42 @@ test('finance-vix works on testing', async t => {
 })
 
 
+test('finance-vix-private works on testing', async t => {
+  const options = {
+    headers: {
+      cookie: `jwt=${process.env.AUTH_TOKEN}`
+    }
+  }
+  const status = await frontendStatus(datasetsToTest[2],baseUrlTesting,pkgStoreTestingUrl,newLine,options)
+  t.is(status.name, 'finance-vix-private')
+  t.is(status.page_status, '200:OK')
+  t.is(status.page_title, 'OK')
+  t.is(status.dataset_title, 'OK')
+  t.is(status.readme, 'OK')
+  t.is(status.csv_links, '200:OK')
+  t.is(status.json_links, '200:OK')
+  t.is(status.zip_links, '200:OK')
+  t.is(status.datapackage_json, '200:OK')
+  t.is(status.tables, 'OK')
+  t.is(status.graphs, 'OK')
+})
+
+test.skip('finance-vix-private works on production', async t => {
+  const options = {
+    headers: {
+      cookie: `jwt=${process.env.AUTH_TOKEN}`
+    }
+  }
+  const status = await frontendStatus(datasetsToTest[2],baseUrl,pkgStoreUrl,newLine,options)
+  t.is(status.name, 'finance-vix-private')
+  t.is(status.page_status, '200:OK')
+  t.is(status.page_title, 'OK')
+  t.is(status.dataset_title, 'OK')
+  t.is(status.readme, 'OK')
+  t.is(status.csv_links, '200:OK')
+  t.is(status.json_links, '200:OK')
+  t.is(status.zip_links, '200:OK')
+  t.is(status.datapackage_json, '200:OK')
+  t.is(status.tables, 'OK')
+  t.is(status.graphs, 'OK')
+})
