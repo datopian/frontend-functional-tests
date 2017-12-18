@@ -54,7 +54,7 @@ test('finance-vix works on testing', async t => {
   t.is(status.graphs, 'OK')
 })
 
-test('finance-vix-private works on testing', async t => {
+test.skip('finance-vix-private works on testing', async t => {
   const options = {
     headers: {
       cookie: `jwt=${process.env.AUTH_TOKEN}`
@@ -74,7 +74,7 @@ test('finance-vix-private works on testing', async t => {
   t.is(status.graphs, 'OK')
 })
 
-test('finance-vix-private works on production', async t => {
+test.skip('finance-vix-private works on production', async t => {
   const options = {
     headers: {
       cookie: `jwt=${process.env.AUTH_TOKEN}`
