@@ -9,6 +9,7 @@
   "ava": {
     "failFast": false,
     "failWithoutAssertions": false,
+    "concurrency": 2,
     "files": [
       "tests/*test.js"
     ]
