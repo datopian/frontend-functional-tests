@@ -21,13 +21,11 @@ const datasetsToTest = [
 ]
 
 const baseUrl = 'https://datahub.io'
-const pkgStoreUrl = 'https://pkgstore.datahub.io'
 const baseUrlTesting = 'https://testing.datahub.io'
-const pkgStoreTestingUrl = 'https://pkgstore-testing.datahub.io'
 
 
 test('finance-vix works on production', async t => {
-  const status = await frontendStatus(datasetsToTest[0],baseUrl,pkgStoreUrl,newLine)
+  const status = await frontendStatus(datasetsToTest[0],baseUrl,newLine)
   t.is(status.name, 'finance-vix')
   t.is(status.page_status, '200:OK')
   t.is(status.page_title, 'OK')
@@ -42,7 +40,7 @@ test('finance-vix works on production', async t => {
 })
 
 test('finance-vix works on testing', async t => {
-  const status = await frontendStatus(datasetsToTest[0],baseUrlTesting,pkgStoreTestingUrl,newLine)
+  const status = await frontendStatus(datasetsToTest[0],baseUrlTesting,newLine)
   t.is(status.name, 'finance-vix')
   t.is(status.page_status, '200:OK')
   t.is(status.page_title, 'OK')
@@ -63,7 +61,7 @@ test('finance-vix-private works on testing', async t => {
       cookie: `jwt=${process.env.AUTH_TOKEN}`
     }
   }
-  const status = await frontendStatus(datasetsToTest[2],baseUrlTesting,pkgStoreTestingUrl,newLine,options)
+  const status = await frontendStatus(datasetsToTest[2],baseUrlTesting,newLine,options)
   t.is(status.name, 'finance-vix-private')
   t.is(status.page_status, '200:OK')
   t.is(status.page_title, 'OK')
@@ -114,7 +112,7 @@ test('finance-vix-private works on production', async t => {
       cookie: `jwt=${process.env.AUTH_TOKEN}`
     }
   }
-  const status = await frontendStatus(datasetsToTest[2],baseUrl,pkgStoreUrl,newLine,options)
+  const status = await frontendStatus(datasetsToTest[2],baseUrl,newLine,options)
   t.is(status.name, 'finance-vix-private')
   t.is(status.page_status, '200:OK')
   t.is(status.page_title, 'OK')

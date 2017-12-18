@@ -70,7 +70,7 @@ const writeToCSV = (statuses) => {
   })
 }
 
-const frontendStatus = async (dataset,baseUrl,pkgStoreUrl,newLine,options) => {
+const frontendStatus = async (dataset,baseUrl,newLine,options) => {
   const statuses = {}
   const date = new Date()
   statuses.id = date.toISOString()
