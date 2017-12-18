@@ -8,6 +8,7 @@
   },
   "ava": {
     "failFast": false,
+    "failWithoutAssertions": false,
     "files": [
       "tests/*test.js"
     ]

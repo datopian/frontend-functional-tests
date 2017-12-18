@@ -2,7 +2,7 @@ const test = require('ava')
 require('dotenv').config()
 const fetch = require('node-fetch')
 
-const {frontendStatus} = require('../index.js')
+const {frontendStatus} = require('../scripts/index.js')
 
 let newLine= "\r\n"
 const datasetsToTest = [
