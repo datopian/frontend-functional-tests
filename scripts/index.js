@@ -3,7 +3,7 @@ const fs = require('fs')
 const json2csv = require('json2csv')
 const fetch = require('node-fetch')
 const cheerio = require('cheerio')
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer')
 
 
 let newLine= "\r\n"
@@ -25,9 +25,8 @@ const pageLoadTime = async (url) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(url, {
-    networkIdleTimeout: 10000,
+    networkIdleTimeout: 5000,
     waitUntil: 'networkidle',
-    networkIdleInflight: 60,
     timeout: 0
   })
   let metrics = await page.getMetrics()
@@ -44,8 +43,8 @@ const pageContent = async (url, options) => {
     url: url
   })
   await page.goto(url, {
-    networkIdleTimeout: 60000,
-    networkIdleInflight: 60,
+    networkIdleTimeout: 30000,
+    networkIdleInflight: 35,
     waitUntil: 'networkidle',
     timeout: 0
   })
