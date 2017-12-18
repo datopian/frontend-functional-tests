@@ -1,17 +1,24 @@
 const test = require('ava')
 require('dotenv').config()
-const {apiStatus, specstoreApiUpload, apiAuthChangeUsername, apiAuthPublicKey, apiMetastoreSearch, apiBitstoreAuthorize, apiBitstoreInfoValidToken, apiBitstoreInfoInvalidToken} = require('../scripts/apiTest.js')
+const {apiStatus, specstoreApiUpload, apiAuthChangeUsername, apiAuthPublicKey, apiStatusWithHeaders, apiBitstoreAuthorize, apiBitstoreInfoValidToken, apiBitstoreInfoInvalidToken} = require('../scripts/apiTest.js')
 
 
 
 test('specstore status works fine', async t => {
-  const url = `http://api.datahub.io/source/examples/${process.env.DATAPACKAGE_NAME}/status`
+  const url = `http://api.datahub.io/source/examples/${process.env.DATAPACKAGE_NAME}/1`
   const body = await apiStatus(url)
   t.is(body.state, 'SUCCEEDED')
 })
 
-test('specstore info works fine', async t => {
-  const url = `http://api.datahub.io/source/examples/${process.env.DATAPACKAGE_NAME}/info`
+test('specstore info for latest revision works fine', async t => {
+  const url = `http://api.datahub.io/source/examples/${process.env.DATAPACKAGE_NAME}/latest`
+  const body = await apiStatus(url)
+  t.is(body.spec_contents.meta.dataset, 'test-data-package-for-api-test')
+  t.is(body.state, 'SUCCEEDED')
+})
+
+test('specstore info for successful revision works fine', async t => {
+  const url = `http://api.datahub.io/source/examples/${process.env.DATAPACKAGE_NAME}/successful`
   const body = await apiStatus(url)
   t.is(body.spec_contents.meta.dataset, 'test-data-package-for-api-test')
   t.is(body.state, 'SUCCEEDED')
@@ -30,8 +37,9 @@ test('auth permission for a service', async t => {
 })
 
 test('auth check an authentication token validity with valid token', async t => {
-  const url = `http://api.datahub.io/auth/check?jwt=${process.env.AUTH_TOKEN}&next=test`
-  const body = await apiStatus(url)
+  const url = `https://api.datahub.io/auth/check?next=test`
+  let body = await apiStatusWithHeaders(url)
+  body = JSON.parse(body)
   t.is(body.authenticated, true)
 })
 
@@ -49,19 +57,19 @@ test('auth receive authorization public key', async t => {
 
 test('metastore search', async t => {
   const url = `http://api.datahub.io/metastore/search?datahub.ownerid="${process.env.OWNERID}"`
-  const body = await apiMetastoreSearch(url)
+  const body = await apiStatusWithHeaders(url)
   t.true(body.includes(`"owner": "examples"`))
 })
 
 test('metastore search events', async t => {
   const url = `http://api.datahub.io/metastore/search/events`
-  const body = await apiMetastoreSearch(url)
+  const body = await apiStatusWithHeaders(url)
   t.true(body.includes(`"dataset": "finance-vix"`))
 })
 
 test('resolver username to userid', async t => {
   const url = `http://api.datahub.io/resolver/resolve?path=examples/vega-airports`
-  const body = await apiMetastoreSearch(url)
+  const body = await apiStatusWithHeaders(url)
   t.true(body.includes(`"userid": "examples"`))
 })
 

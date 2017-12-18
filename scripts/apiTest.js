@@ -1,6 +1,23 @@
 require('dotenv').config()
 const fetch = require('node-fetch')
 
+// api calls general
+
+const apiStatus = async (url) => {
+  const res = await fetch(url)
+  let body = await res.text()
+  body = JSON.parse(body)
+  return body
+}
+
+const apiStatusWithHeaders = async (url) => {
+  const res = await fetch(url, {
+    headers: {'Auth-Token': process.env.AUTH_TOKEN}
+  })
+  let body = await res.text()
+  return body
+}
+
 
 // specstore API upload
 const specstoreApiUpload = async (url) => {
@@ -14,13 +31,6 @@ const specstoreApiUpload = async (url) => {
   return body
 }
 
-// specstore API status
-const apiStatus = async (url) => {
-  const res = await fetch(url)
-  let body = await res.text()
-  body = JSON.parse(body)
-  return body
-}
 
 // specstore API upload
 const apiAuthChangeUsername = async (url) => {
@@ -34,14 +44,6 @@ const apiAuthChangeUsername = async (url) => {
 
 const apiAuthPublicKey = async (url) => {
   const res = await fetch(url)
-  let body = await res.text()
-  return body
-}
-
-const apiMetastoreSearch = async (url) => {
-  const res = await fetch(url, {
-    headers: {'Auth-Token': process.env.AUTH_TOKEN}
-  })
   let body = await res.text()
   return body
 }
@@ -75,7 +77,7 @@ module.exports = {
   apiAuthChangeUsername,
   specstoreApiUpload,
   apiAuthPublicKey,
-  apiMetastoreSearch,
+  apiStatusWithHeaders,
   apiBitstoreAuthorize,
   apiBitstoreInfoValidToken,
   apiBitstoreInfoInvalidToken
