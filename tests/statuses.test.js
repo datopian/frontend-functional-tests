@@ -24,7 +24,7 @@ const baseUrl = 'https://datahub.io'
 const baseUrlTesting = 'https://testing.datahub.io'
 
 
-test('finance-vix works on production', async t => {
+test.serial('finance-vix works on production', async t => {
   const status = await frontendStatus(datasetsToTest[0],baseUrl,newLine)
   t.is(status.name, 'finance-vix')
   t.is(status.page_status, '200:OK')
@@ -39,7 +39,7 @@ test('finance-vix works on production', async t => {
   t.is(status.graphs, 'OK')
 })
 
-test('finance-vix works on testing', async t => {
+test.serial('finance-vix works on testing', async t => {
   const status = await frontendStatus(datasetsToTest[0],baseUrlTesting,newLine)
   t.is(status.name, 'finance-vix')
   t.is(status.page_status, '200:OK')
@@ -54,7 +54,7 @@ test('finance-vix works on testing', async t => {
   t.is(status.graphs, 'OK')
 })
 
-test.skip('finance-vix-private works on testing', async t => {
+test.serial('finance-vix-private works on testing', async t => {
   const options = {
     headers: {
       cookie: `jwt=${process.env.AUTH_TOKEN}`
@@ -74,7 +74,7 @@ test.skip('finance-vix-private works on testing', async t => {
   t.is(status.graphs, 'OK')
 })
 
-test.skip('finance-vix-private works on production', async t => {
+test.serial('finance-vix-private works on production', async t => {
   const options = {
     headers: {
       cookie: `jwt=${process.env.AUTH_TOKEN}`
