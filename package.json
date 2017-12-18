@@ -4,7 +4,7 @@
   "description": "Functional testing for frontend",
   "main": "index.js",
   "scripts": {
-    "test": "ava -v --timeout=2m"
+    "test": "ava -v --timeout=5m"
   },
   "ava": {
      "failFast": false,
