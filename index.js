@@ -27,6 +27,7 @@ const pageLoadTime = async (url) => {
   await page.goto(url, {
     networkIdleTimeout: 5000,
     waitUntil: 'networkidle',
+    networkIdleInflight: 5,
     timeout: 0
   })
   let metrics = await page.getMetrics()
@@ -44,7 +45,7 @@ const pageContent = async (url, options) => {
   })
   await page.goto(url, {
     networkIdleTimeout: 50000,
-    networkIdleInflight: 50,
+    networkIdleInflight: 60,
     waitUntil: 'networkidle',
     timeout: 0
   })
