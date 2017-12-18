@@ -3,7 +3,6 @@ require('dotenv').config()
 const {apiStatus, specstoreApiUpload, apiAuthChangeUsername, apiAuthPublicKey, apiStatusWithHeaders, apiBitstoreAuthorize, apiBitstoreInfoValidToken, apiBitstoreInfoInvalidToken} = require('../scripts/apiTest.js')
 
 
-
 test('specstore status works fine', async t => {
   const url = `http://api.datahub.io/source/examples/${process.env.DATAPACKAGE_NAME}/1`
   const body = await apiStatus(url)
