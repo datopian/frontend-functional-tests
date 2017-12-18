@@ -6,6 +6,12 @@
   "scripts": {
     "test": "ava -v"
   },
+  "ava": {
+     "failFast": false,
+     "files": [
+       "tests/*test.js"
+     ]
+   },
   "author": "",
   "license": "ISC",
   "dependencies": {
