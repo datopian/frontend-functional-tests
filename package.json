@@ -2,9 +2,9 @@
   "name": "functional-testing",
   "version": "1.0.0",
   "description": "Functional testing for frontend",
-  "main": "index.js",
+  "main": "scripts/index.js",
   "scripts": {
-    "test": "ava -v --timeout=10m"
+    "test": "ava -v"
   },
   "ava": {
     "failFast": false,

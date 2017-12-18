@@ -25,9 +25,9 @@ const pageLoadTime = async (url) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(url, {
-    networkIdleTimeout: 5000,
+    networkIdleTimeout: 10000,
     waitUntil: 'networkidle',
-    networkIdleInflight: 5,
+    networkIdleInflight: 60,
     timeout: 0
   })
   let metrics = await page.getMetrics()
@@ -44,7 +44,7 @@ const pageContent = async (url, options) => {
     url: url
   })
   await page.goto(url, {
-    networkIdleTimeout: 50000,
+    networkIdleTimeout: 60000,
     networkIdleInflight: 60,
     waitUntil: 'networkidle',
     timeout: 0
