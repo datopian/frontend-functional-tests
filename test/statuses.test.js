@@ -26,7 +26,7 @@ const baseUrlTesting = 'https://testing.datahub.io'
 const pkgStoreTestingUrl = 'https://pkgstore-testing.datahub.io'
 
 
-test.serial('finance-vix works on production', async t => {
+test('finance-vix works on production', async t => {
   const status = await frontendStatus(datasetsToTest[0],baseUrl,pkgStoreUrl,newLine)
   t.is(status.name, 'finance-vix')
   t.is(status.page_status, '200:OK')
@@ -41,7 +41,7 @@ test.serial('finance-vix works on production', async t => {
   t.is(status.graphs, 'OK')
 })
 
-test.serial('finance-vix works on testing', async t => {
+test('finance-vix works on testing', async t => {
   const status = await frontendStatus(datasetsToTest[0],baseUrlTesting,pkgStoreTestingUrl,newLine)
   t.is(status.name, 'finance-vix')
   t.is(status.page_status, '200:OK')
@@ -57,7 +57,7 @@ test.serial('finance-vix works on testing', async t => {
 })
 
 
-test.serial('finance-vix-private works on testing', async t => {
+test('finance-vix-private works on testing', async t => {
   const options = {
     headers: {
       cookie: `jwt=${process.env.AUTH_TOKEN}`
@@ -77,7 +77,7 @@ test.serial('finance-vix-private works on testing', async t => {
   t.is(status.graphs, 'OK')
 })
 
-test.serial('finance-vix-private does not work when logged out on testing', async t => {
+test('finance-vix-private does not work when logged out on testing', async t => {
   let response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
   t.is(response.status, 404)
   response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
@@ -90,7 +90,7 @@ test.serial('finance-vix-private does not work when logged out on testing', asyn
   t.is(response.status, 404)
 })
 
-test.serial('finance-vix-private does not work when logged in but not owner on testing', async t => {
+test('finance-vix-private does not work when logged in but not owner on testing', async t => {
   const options = {
     headers: {
       cookie: `jwt=test`
@@ -108,7 +108,7 @@ test.serial('finance-vix-private does not work when logged in but not owner on t
   t.is(response.status, 404)
 })
 
-test.serial('finance-vix-private works on production', async t => {
+test('finance-vix-private works on production', async t => {
   const options = {
     headers: {
       cookie: `jwt=${process.env.AUTH_TOKEN}`
@@ -127,7 +127,7 @@ test.serial('finance-vix-private works on production', async t => {
   t.is(status.tables, 'OK')
   t.is(status.graphs, 'OK')
 })
-test.serial('finance-vix-private does not work when logged out on production', async t => {
+test('finance-vix-private does not work when logged out on production', async t => {
   let response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
   t.is(response.status, 404)
   response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
@@ -140,7 +140,7 @@ test.serial('finance-vix-private does not work when logged out on production', a
   t.is(response.status, 404)
 })
 
-test.serial('finance-vix-private does not work when logged in but not owner on production', async t => {
+test('finance-vix-private does not work when logged in but not owner on production', async t => {
   const options = {
     headers: {
       cookie: `jwt=test`
