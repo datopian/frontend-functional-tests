@@ -3,4 +3,13 @@ node_js:
 - '8'
 install:
 - npm install
+- npm install -g git+https://github.com/datahq/datahub-cli.git
+before_script:
+- data push tests/fixtures/validate-redirection-dataset
+- sleep 60000
 script: npm run test
+env:
+  global:
+    id: examples
+    username: examples
+  TRAVIS_SECURE_ENV_VARS: true

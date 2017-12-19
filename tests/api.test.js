@@ -1,30 +1,30 @@
 const test = require('ava')
 require('dotenv').config()
-const {apiStatus, specstoreApiUpload, apiAuthChangeUsername, apiAuthPublicKey, apiStatusWithHeaders, apiBitstoreAuthorize, apiBitstoreInfoValidToken, apiBitstoreInfoInvalidToken} = require('../scripts/apiTest.js')
+const {apiStatus, specstoreApiUpload, apiAuthChangeUsername, apiAuthPublicKey, apiStatusWithHeaders, apiBitstoreAuthorize, apiBitstoreInfoValidToken, apiBitstoreInfoInvalidToken} = require('../scripts/api.js')
 
 
 test('specstore status works fine', async t => {
-  const url = `http://api.datahub.io/source/examples/${process.env.DATAPACKAGE_NAME}/1`
+  const url = `${process.env.SPECSTORE}/${process.env.OWNERID}/${process.env.DATAPACKAGE_NAME}/1`
   const body = await apiStatus(url)
   t.is(body.state, 'SUCCEEDED')
 })
 
 test('specstore info for latest revision works fine', async t => {
-  const url = `http://api.datahub.io/source/examples/${process.env.DATAPACKAGE_NAME}/latest`
+  const url = `${process.env.SPECSTORE}/${process.env.OWNERID}/${process.env.DATAPACKAGE_NAME}/latest`
   const body = await apiStatus(url)
   t.is(body.spec_contents.meta.dataset, 'test-data-package-for-api-test')
   t.is(body.state, 'SUCCEEDED')
 })
 
 test('specstore info for successful revision works fine', async t => {
-  const url = `http://api.datahub.io/source/examples/${process.env.DATAPACKAGE_NAME}/successful`
+  const url = `${process.env.SPECSTORE}/${process.env.OWNERID}/${process.env.DATAPACKAGE_NAME}/successful`
   const body = await apiStatus(url)
   t.is(body.spec_contents.meta.dataset, 'test-data-package-for-api-test')
   t.is(body.state, 'SUCCEEDED')
 })
 
 test('specstore upload works fine', async t => {
-  const url = 'http://api.datahub.io/source/upload'
+  const url = `${process.env.SPECSTORE}/upload`
   const body = await specstoreApiUpload(url)
   t.is(body.success, false)
 })

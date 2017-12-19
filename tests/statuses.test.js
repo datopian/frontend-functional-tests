@@ -20,12 +20,9 @@ const datasetsToTest = [
   }
 ]
 
-const baseUrl = 'https://datahub.io'
-const baseUrlTesting = 'https://testing.datahub.io'
-
 
 test('finance-vix works on production', async t => {
-  const status = await frontendStatus(datasetsToTest[0],baseUrl,newLine)
+  const status = await frontendStatus(datasetsToTest[0],process.env.DOMAIN,newLine)
   t.is(status.name, 'finance-vix')
   t.is(status.page_status, '200:OK')
   t.is(status.page_title, 'OK')
@@ -40,7 +37,7 @@ test('finance-vix works on production', async t => {
 })
 
 test('finance-vix works on testing', async t => {
-  const status = await frontendStatus(datasetsToTest[0],baseUrlTesting,newLine)
+  const status = await frontendStatus(datasetsToTest[0],process.env.TESTING,newLine)
   t.is(status.name, 'finance-vix')
   t.is(status.page_status, '200:OK')
   t.is(status.page_title, 'OK')
@@ -60,7 +57,7 @@ test('finance-vix-private works on testing', async t => {
       cookie: `jwt=${process.env.AUTH_TOKEN}`
     }
   }
-  const status = await frontendStatus(datasetsToTest[2],baseUrlTesting,newLine,options)
+  const status = await frontendStatus(datasetsToTest[2],process.env.TESTING,newLine,options)
   t.is(status.name, 'finance-vix-private')
   t.is(status.page_status, '200:OK')
   t.is(status.page_title, 'OK')
@@ -80,7 +77,7 @@ test('finance-vix-private works on production', async t => {
       cookie: `jwt=${process.env.AUTH_TOKEN}`
     }
   }
-  const status = await frontendStatus(datasetsToTest[2],baseUrl,newLine,options)
+  const status = await frontendStatus(datasetsToTest[2],process.env.DOMAIN,newLine,options)
   t.is(status.name, 'finance-vix-private')
   t.is(status.page_status, '200:OK')
   t.is(status.page_title, 'OK')
@@ -95,15 +92,15 @@ test('finance-vix-private works on production', async t => {
 })
 
 test('finance-vix-private does not work when logged out on testing', async t => {
-  let response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
+  let response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
+  response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`)
+  response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`)
+  response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`)
+  response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`)
   t.is(response.status, 404)
 })
 
@@ -113,28 +110,28 @@ test('finance-vix-private does not work when logged in but not owner on testing'
       cookie: `jwt=test`
     }
   }
-  let response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`, options)
+  let response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`, options)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`, options)
+  response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`, options)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`, options)
+  response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`, options)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`, options)
+  response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`, options)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrlTesting}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`, options)
+  response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`, options)
   t.is(response.status, 404)
 })
 
 test('finance-vix-private does not work when logged out on production', async t => {
-  let response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
+  let response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
+  response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`)
+  response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`)
+  response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`)
+  response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`)
   t.is(response.status, 404)
 })
 
@@ -144,14 +141,14 @@ test('finance-vix-private does not work when logged in but not owner on producti
       cookie: `jwt=test`
     }
   }
-  let response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`, options)
+  let response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`, options)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`, options)
+  response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`, options)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`, options)
+  response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`, options)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`, options)
+  response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`, options)
   t.is(response.status, 404)
-  response = await fetch(`${baseUrl}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`, options)
+  response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`, options)
   t.is(response.status, 404)
 })
