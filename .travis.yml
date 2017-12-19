@@ -6,7 +6,7 @@ install:
 - npm install -g git+https://github.com/datahq/datahub-cli.git
 before_script:
 - data push tests/fixtures/validate-redirection-dataset
-- sleep 30000
+- sleep 60
 script: npm run test
 env:
   global:
