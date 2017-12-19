@@ -28,7 +28,8 @@ describe('dataset validation in frontend', function () {
     expect(body.state).to.equal('SUCCEEDED')
   })
   it('redirection works on production', async function () {
-    this.timeout(120000);
+    this.timeout(120000)
+    this.retries(2)
     const status = await frontendStatus(datasetsToTest[0],process.env.DOMAIN,newLine)
     expect(status.name).to.equal('redirection-test-dataset')
     expect(status.page_status).to.equal('200:OK')

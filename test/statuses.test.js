@@ -25,6 +25,7 @@ const datasetsToTest = [
 describe('testing public dataset, in our case finance-vix', function () {
   it('finance-vix works on production', async function () {
     this.timeout(120000)
+    this.retries(2)
     const status = await frontendStatus(datasetsToTest[0],process.env.DOMAIN,newLine)
     expect(status.name).to.equal('finance-vix')
     expect(status.page_status).to.equal('200:OK')
@@ -40,6 +41,7 @@ describe('testing public dataset, in our case finance-vix', function () {
   })
   it('finance-vix works on testing', async function () {
     this.timeout(120000)
+    this.retries(2)
     const status = await frontendStatus(datasetsToTest[0],process.env.TESTING,newLine)
     expect(status.name).to.equal('finance-vix')
     expect(status.page_status).to.equal('200:OK')
@@ -58,6 +60,7 @@ describe('testing public dataset, in our case finance-vix', function () {
 describe('testing private dataset, in our case finance-vix', function () {
   it('finance-vix-private works on testing', async function () {
     this.timeout(120000)
+    this.retries(2)
     const options = {
       headers: {
         cookie: `jwt=${process.env.AUTH_TOKEN}`
@@ -78,6 +81,7 @@ describe('testing private dataset, in our case finance-vix', function () {
   })
   it('finance-vix-private works on production', async function () {
     this.timeout(120000)
+    this.retries(2)
     const options = {
       headers: {
         cookie: `jwt=${process.env.AUTH_TOKEN}`
@@ -98,6 +102,7 @@ describe('testing private dataset, in our case finance-vix', function () {
   })
   it('finance-vix-private does not work when logged out on testing', async function () {
     this.timeout(30000)
+    this.retries(2)
     let response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
     expect(response.status).to.equal(404)
     response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
@@ -111,6 +116,7 @@ describe('testing private dataset, in our case finance-vix', function () {
   })
   it('finance-vix-private does not work when logged in but not owner on testing', async function () {
     this.timeout(30000)
+    this.retries(2)
     const options = {
       headers: {
         cookie: `jwt=test`
@@ -129,6 +135,7 @@ describe('testing private dataset, in our case finance-vix', function () {
   })
   it('finance-vix-private does not work when logged out on production', async function () {
     this.timeout(30000)
+    this.retries(2)
     let response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
     expect(response.status).to.equal(404)
     response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
@@ -142,6 +149,7 @@ describe('testing private dataset, in our case finance-vix', function () {
   })
   it('finance-vix-private does not work when logged in but not owner on production', async function () {
     this.timeout(30000)
+    this.retries(2)
     const options = {
       headers: {
         cookie: `jwt=test`
