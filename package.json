@@ -4,12 +4,14 @@
   "description": "Functional testing for frontend",
   "main": "scripts/index.js",
   "scripts": {
-    "test": "ava",
+    "test": "ava -v",
     "watch:test": "npm t -- --watch"
   },
   "ava": {
     "require": "babel-register",
     "failFast": false,
+    "failWithoutAssertions": false,
+    "concurrency": 1,
     "files": [
       "tests/*test.js"
     ]
