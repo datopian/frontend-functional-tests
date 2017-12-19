@@ -21,19 +21,6 @@ const datapackageJson = async (url, options={}) => {
   return body
 }
 
-// const pageLoadTime = async (url) => {
-//   const browser = await puppeteer.launch()
-//   const page = await browser.newPage()
-//   await page.goto(url, {
-//     networkIdleTimeout: 5000,
-//     waitUntil: 'networkidle',
-//     timeout: 0
-//   })
-//   let metrics = await page.getMetrics()
-//   await browser.close()
-//   return metrics
-// }
-
 const pageContent = async (url, options) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
@@ -43,8 +30,8 @@ const pageContent = async (url, options) => {
     url: url
   })
   await page.goto(url, {
-    networkIdleTimeout: 30000,
-    networkIdleInflight: 35,
+    networkIdleTimeout: 50000,
+    networkIdleInflight: 25,
     waitUntil: 'networkidle',
     timeout: 0
   })
@@ -129,11 +116,6 @@ const frontendStatus = async (dataset,baseUrl,newLine,options) => {
       const dpUrl = await checkPage(datapackageUrl, options)
       statuses.datapackage_json = dpUrl.status + ':' + dpUrl.statusText
     }
-    // // page loading time 
-    // const loadTime = await pageLoadTime(showcaseUrl)
-    // statuses.total_load_time = loadTime.TaskDuration
-    // statuses.script_laod_time = loadTime.ScriptDuration
-    // statuses.layout_load_time = loadTime.LayoutDuration
     
     // graphs
     try {
