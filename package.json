@@ -8,6 +8,9 @@
     "watch:test": "npm t -- --watch"
   },
   "ava": {
+    "require": [
+      "babel-core/register"
+    ],
     "failFast": false,
     "failWithoutAssertions": false,
     "files": [
