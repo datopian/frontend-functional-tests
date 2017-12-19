@@ -4,16 +4,12 @@
   "description": "Functional testing for frontend",
   "main": "scripts/index.js",
   "scripts": {
-    "test": "ava -v",
+    "test": "ava",
     "watch:test": "npm t -- --watch"
   },
   "ava": {
-    "require": [
-      "babel-core/register"
-    ],
+    "require": "babel-register",
     "failFast": false,
-    "failWithoutAssertions": false,
-    "concurrency": 2,
     "files": [
       "tests/*test.js"
     ]
@@ -28,6 +24,7 @@
     "puppeteer": "0.12.0"
   },
   "devDependencies": {
-    "ava": "^0.24.0"
+    "ava": "^0.24.0",
+    "babel-register": "^6.18.0"
   }
 }

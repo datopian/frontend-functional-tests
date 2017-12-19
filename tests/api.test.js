@@ -1,3 +1,5 @@
+'use strict'
+
 const test = require('ava')
 require('dotenv').config()
 const {apiStatus, specstoreApiUpload, apiAuthChangeUsername, apiAuthPublicKey, apiStatusWithHeaders, apiBitstoreAuthorize, apiBitstoreInfoValidToken, apiBitstoreInfoInvalidToken} = require('../scripts/api.js')

@@ -1,3 +1,5 @@
+'use strict'
+
 const test = require('ava')
 require('dotenv').config()
 const fetch = require('node-fetch')
