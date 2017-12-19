@@ -5,6 +5,7 @@ require('dotenv').config()
 const expect = require('chai').expect;
 const {apiStatus} = require('../scripts/api.js')
 const {frontendStatus} = require('../scripts/index.js')
+let sleep = require('sleep')
 
 let newLine= "\r\n"
 
@@ -19,7 +20,6 @@ const datasetsToTest = [
 
 describe('dataset validation in frontend', function () {
   it('redirection test for specstore', async function () {
-    sleep.sleep(60)
     const urlLatest = `${process.env.SPECSTORE}/${process.env.OWNERID}/${process.env.REDIRECTION_DATASET}/latest`
     let body = await apiStatus(urlLatest)
     const revisionId = body.id.split('/').pop()
@@ -30,8 +30,7 @@ describe('dataset validation in frontend', function () {
   })
   it('redirection works on production', async function () {
     sleep.sleep(60)
-    this.timeout(120000)
-    this.retries(2)
+    this.timeout(1200000)
     const status = await frontendStatus(datasetsToTest[0],process.env.DOMAIN,newLine)
     expect(status.name).to.equal('redirection-test-dataset')
     expect(status.page_status).to.equal('200:OK')
