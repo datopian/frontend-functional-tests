@@ -3,6 +3,7 @@
 const expect = require('chai').expect
 require('dotenv').config()
 const fetch = require('node-fetch')
+let sleep = require('sleep')
 
 const {frontendStatus} = require('../scripts/index.js')
 
@@ -59,6 +60,7 @@ describe('testing public dataset, in our case finance-vix', function () {
 
 describe('testing private dataset, in our case finance-vix', function () {
   it('finance-vix-private works on testing', async function () {
+    sleep.sleep(60)
     this.timeout(120000)
     this.retries(2)
     const options = {
@@ -80,6 +82,7 @@ describe('testing private dataset, in our case finance-vix', function () {
     expect(status.graphs).to.equal('OK')
   })
   it('finance-vix-private works on production', async function () {
+    sleep.sleep(60)
     this.timeout(120000)
     this.retries(2)
     const options = {
