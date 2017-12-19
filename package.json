@@ -4,17 +4,11 @@
   "description": "Functional testing for frontend",
   "main": "scripts/index.js",
   "scripts": {
-    "test": "ava -v",
-    "watch:test": "npm t -- --watch"
+    "watch:test": "npm t -- --watch",
+    "test": "mocha"
   },
-  "ava": {
-    "require": "babel-register",
-    "failFast": false,
-    "failWithoutAssertions": false,
-    "concurrency": 1,
-    "files": [
-      "tests/*test.js"
-    ]
+  "mocha": {
+    "require": "babel-register"
   },
   "author": "",
   "license": "ISC",
@@ -27,6 +21,8 @@
   },
   "devDependencies": {
     "ava": "^0.24.0",
-    "babel-register": "^6.18.0"
+    "babel-register": "^6.18.0",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1"
   }
 }
