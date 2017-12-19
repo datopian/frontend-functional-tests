@@ -17,7 +17,7 @@ const datasetsToTest = [
 ]
 
 
-describe('test', function () {
+describe('validation datasets in frontend', function () {
   it('redirection test for specstore', async function () {
     const urlLatest = `${process.env.SPECSTORE}/${process.env.OWNERID}/${process.env.REDIRECTION_DATASET}/latest`
     let body = await apiStatus(urlLatest)
