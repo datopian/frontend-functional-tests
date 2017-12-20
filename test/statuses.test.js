@@ -38,7 +38,7 @@ describe('testing public dataset, in our case finance-vix', function () {
     expect(status.tables).to.equal('OK')
     expect(status.graphs).to.equal('OK')
   })
-  it('finance-vix works on testing', async function () {
+  it.skip('finance-vix works on testing', async function () {
     this.timeout(180000)
     const status = await frontendStatus(datasetsToTest[0],process.env.TESTING,newLine)
     expect(status.name).to.equal('finance-vix')
@@ -56,7 +56,7 @@ describe('testing public dataset, in our case finance-vix', function () {
 })
 
 describe('testing private dataset, in our case finance-vix', function () {
-  it('finance-vix-private works on testing', async function () {
+  it.skip('finance-vix-private works on testing', async function () {
     this.timeout(1800000)
     const options = {
       headers: {
@@ -96,7 +96,7 @@ describe('testing private dataset, in our case finance-vix', function () {
     expect(status.tables).to.equal('OK')
     expect(status.graphs).to.equal('OK')
   })
-  it('finance-vix-private does not work when logged out on testing', async function () {
+  it.skip('finance-vix-private does not work when logged out on testing', async function () {
     this.timeout(30000)
     let response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
     expect(response.status).to.equal(404)
@@ -109,7 +109,7 @@ describe('testing private dataset, in our case finance-vix', function () {
     response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`)
     expect(response.status).to.equal(404)
   })
-  it('finance-vix-private does not work when logged in but not owner on testing', async function () {
+  it.skip('finance-vix-private does not work when logged in but not owner on testing', async function () {
     this.timeout(30000)
     this.retries(2)
     const options = {
