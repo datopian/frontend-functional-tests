@@ -10,7 +10,7 @@ install:
 - npm install
 - npm install -g git+https://github.com/datahq/datahub-cli.git
 before_script:
-  if: [ ${DOMAIN} = "https://datahub.io" ]
+  if: ${DOMAIN} = "https://datahub.io"
     - data push tests/fixtures/validate-redirection-dataset --api=https://api.datahub.io
     - sleep 60
   else:
