@@ -3,18 +3,14 @@ node_js:
 - '8'
 matrix:
   include:
-    - env: DOMAIN=https://datahub.io
-    - env: DOMAIN=https://testing.datahub.io
+    - env: DOMAIN=https://datahub.io SPECSTOREAPI=https://api.datahub.io
+    - env: DOMAIN=https://testing.datahub.io SPECSTOREAPI=https://api-testing.datahub.io
 install:
 - npm install
 - npm install -g git+https://github.com/datahq/datahub-cli.git
 before_script:
-  - data push tests/fixtures/validate-redirection-dataset --api=https://api.datahub.io
-  - sleep 60
-    if: ${DOMAIN} = "https://datahub.io"
-  - data push tests/fixtures/validate-redirection-dataset --api=https://api-testing.datahub.io
-  - sleep 60
-    if: ${DOMAIN} = "https://testing.datahub.io"   
+- "data push tests/fixtures/validate-redirection-dataset --api=$SPECSTOREAPI"
+- sleep 60
 script: npm run test
 env:
   global:
