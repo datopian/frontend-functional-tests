@@ -2,6 +2,10 @@ os: osx
 language: node_js
 node_js:
 - '8'
+matrix:
+  include:
+    - env: DOMAIN=https://datahub.io
+    - env: DOMAIN=https://testing.datahub.io
 install:
 - npm install
 - npm install -g git+https://github.com/datahq/datahub-cli.git
@@ -12,9 +16,9 @@ before_script:
 - sleep 60
 script: npm run test
 env:
-  DOMAIN: https://datahub.io
-  DOMAIN: https://testing.datahub.io
   global:
     id: examples
     username: examples
   TRAVIS_SECURE_ENV_VARS: true
+    
+    
