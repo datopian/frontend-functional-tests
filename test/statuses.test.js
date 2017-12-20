@@ -3,7 +3,6 @@
 const expect = require('chai').expect
 require('dotenv').config()
 const fetch = require('node-fetch')
-let sleep = require('sleep')
 
 const {frontendStatus} = require('../scripts/index.js')
 
@@ -25,7 +24,7 @@ const datasetsToTest = [
 
 describe('testing public dataset, in our case finance-vix', function () {
   it('finance-vix works on production', async function () {
-    this.timeout(120000)
+    this.timeout(180000)
     const status = await frontendStatus(datasetsToTest[0],process.env.DOMAIN,newLine)
     expect(status.name).to.equal('finance-vix')
     expect(status.page_status).to.equal('200:OK')
@@ -40,7 +39,7 @@ describe('testing public dataset, in our case finance-vix', function () {
     expect(status.graphs).to.equal('OK')
   })
   it('finance-vix works on testing', async function () {
-    this.timeout(120000)
+    this.timeout(180000)
     const status = await frontendStatus(datasetsToTest[0],process.env.TESTING,newLine)
     expect(status.name).to.equal('finance-vix')
     expect(status.page_status).to.equal('200:OK')
@@ -58,8 +57,7 @@ describe('testing public dataset, in our case finance-vix', function () {
 
 describe('testing private dataset, in our case finance-vix', function () {
   it('finance-vix-private works on testing', async function () {
-    sleep.sleep(60)
-    this.timeout(1200000)
+    this.timeout(1800000)
     const options = {
       headers: {
         cookie: `jwt=${process.env.AUTH_TOKEN}`
@@ -79,8 +77,7 @@ describe('testing private dataset, in our case finance-vix', function () {
     expect(status.graphs).to.equal('OK')
   })
   it('finance-vix-private works on production', async function () {
-    sleep.sleep(60)
-    this.timeout(1200000)
+    this.timeout(1800000)
     const options = {
       headers: {
         cookie: `jwt=${process.env.AUTH_TOKEN}`
