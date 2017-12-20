@@ -5,11 +5,16 @@ install:
 - npm install
 - npm install -g git+https://github.com/datahq/datahub-cli.git
 before_script:
-- data push tests/fixtures/validate-redirection-dataset
+- data push tests/fixtures/validate-redirection-dataset --api=https://api.datahub.io
+- sleep 10
+- data push tests/fixtures/validate-redirection-dataset --api=https://api-testing.datahub.io
 - sleep 60
 script: npm run test
 env:
   global:
     id: examples
     username: examples
+  matrix:
+    DOMAIN: https://datahub.io
+    DOMAIN: https://testing.datahub.io
   TRAVIS_SECURE_ENV_VARS: true
