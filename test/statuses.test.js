@@ -6,7 +6,8 @@ const fetch = require('node-fetch')
 
 const {frontendStatus} = require('../scripts/index.js')
 
-let newLine= "\r\n"
+const newLine= "\r\n"
+const DOMAIN = process.env.DOMAIN
 const datasetsToTest = [
   {
     "owner": "core",
@@ -23,24 +24,9 @@ const datasetsToTest = [
 ]
 
 describe('testing public dataset, in our case finance-vix', function () {
-  it('finance-vix works on production', async function () {
+  it(`finance-vix works on ${DOMAIN}`, async function () {
     this.timeout(180000)
-    const status = await frontendStatus(datasetsToTest[0],process.env.DOMAIN,newLine)
-    expect(status.name).to.equal('finance-vix')
-    expect(status.page_status).to.equal('200:OK')
-    expect(status.page_title).to.equal('OK')
-    expect(status.dataset_title).to.equal('OK')
-    expect(status.readme).to.equal('OK')
-    expect(status.csv_links).to.equal('200:OK')
-    expect(status.json_links).to.equal('200:OK')
-    expect(status.zip_links).to.equal('200:OK')
-    expect(status.datapackage_json).to.equal('200:OK')
-    expect(status.tables).to.equal('OK')
-    expect(status.graphs).to.equal('OK')
-  })
-  it.skip('finance-vix works on testing', async function () {
-    this.timeout(180000)
-    const status = await frontendStatus(datasetsToTest[0],process.env.TESTING,newLine)
+    const status = await frontendStatus(datasetsToTest[0],DOMAIN,newLine)
     expect(status.name).to.equal('finance-vix')
     expect(status.page_status).to.equal('200:OK')
     expect(status.page_title).to.equal('OK')
@@ -56,34 +42,14 @@ describe('testing public dataset, in our case finance-vix', function () {
 })
 
 describe('testing private dataset, in our case finance-vix', function () {
-  it.skip('finance-vix-private works on testing', async function () {
+  it(`finance-vix-private works on ${DOMAIN}`, async function () {
     this.timeout(1800000)
     const options = {
       headers: {
         cookie: `jwt=${process.env.AUTH_TOKEN}`
       }
     }
-    const status = await frontendStatus(datasetsToTest[2],process.env.TESTING,newLine,options)
-    expect(status.name).to.equal('finance-vix-private')
-    expect(status.page_status).to.equal('200:OK')
-    expect(status.page_title).to.equal('OK')
-    expect(status.dataset_title).to.equal('OK')
-    expect(status.readme).to.equal('OK')
-    expect(status.csv_links).to.equal('200:OK')
-    expect(status.json_links).to.equal('200:OK')
-    expect(status.zip_links).to.equal('200:OK')
-    expect(status.datapackage_json).to.equal('200:OK')
-    expect(status.tables).to.equal('OK')
-    expect(status.graphs).to.equal('OK')
-  })
-  it('finance-vix-private works on production', async function () {
-    this.timeout(1800000)
-    const options = {
-      headers: {
-        cookie: `jwt=${process.env.AUTH_TOKEN}`
-      }
-    }
-    const status = await frontendStatus(datasetsToTest[2],process.env.DOMAIN,newLine,options)
+    const status = await frontendStatus(datasetsToTest[2],DOMAIN,newLine,options)
     expect(status.name, 'finance-vix-private')
     expect(status.page_status).to.equal('200:OK')
     expect(status.page_title).to.equal('OK')
@@ -96,20 +62,21 @@ describe('testing private dataset, in our case finance-vix', function () {
     expect(status.tables).to.equal('OK')
     expect(status.graphs).to.equal('OK')
   })
-  it.skip('finance-vix-private does not work when logged out on testing', async function () {
+  it(`finance-vix-private does not work when logged out on ${DOMAIN}`, async function () {
     this.timeout(30000)
-    let response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
+    this.retries(2)
+    let response = await fetch(`${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
     expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
+    response = await fetch(`${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
     expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`)
+    response = await fetch(`${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`)
     expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`)
+    response = await fetch(`${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`)
     expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`)
+    response = await fetch(`${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`)
     expect(response.status).to.equal(404)
   })
-  it.skip('finance-vix-private does not work when logged in but not owner on testing', async function () {
+  it(`finance-vix-private does not work when logged in but not owner on ${DOMAIN}`, async function () {
     this.timeout(30000)
     this.retries(2)
     const options = {
@@ -117,48 +84,15 @@ describe('testing private dataset, in our case finance-vix', function () {
         cookie: `jwt=test`
       }
     }
-    let response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`, options)
+    let response = await fetch(`${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`, options)
     expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`, options)
+    response = await fetch(`${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`, options)
     expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`, options)
+    response = await fetch(`${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`, options)
     expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`, options)
+    response = await fetch(`${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`, options)
     expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.TESTING}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`, options)
-    expect(response.status).to.equal(404)
-  })
-  it('finance-vix-private does not work when logged out on production', async function () {
-    this.timeout(30000)
-    this.retries(2)
-    let response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`)
-    expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`)
-    expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`)
-    expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`)
-    expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`)
-    expect(response.status).to.equal(404)
-  })
-  it('finance-vix-private does not work when logged in but not owner on production', async function () {
-    this.timeout(30000)
-    this.retries(2)
-    const options = {
-      headers: {
-        cookie: `jwt=test`
-      }
-    }
-    let response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}`, options)
-    expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/datapackage.json`, options)
-    expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.csv`, options)
-    expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/vix_daily.json`, options)
-    expect(response.status).to.equal(404)
-    response = await fetch(`${process.env.DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`, options)
+    response = await fetch(`${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/r/datapackage_zip.zip`, options)
     expect(response.status).to.equal(404)
   })
 })

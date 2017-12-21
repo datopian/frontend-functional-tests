@@ -8,7 +8,10 @@ const {frontendStatus} = require('../scripts/index.js')
 
 let newLine= "\r\n"
 
-
+const DOMAIN = process.env.DOMAIN
+const SPECSTORE = process.env.SPECSTORE
+const OWNERID = process.env.OWNERID
+const REDIRECTION_DATASET = 'redirection-test-dataset'
 const datasetsToTest = [
   {
     "owner": "examples",
@@ -20,18 +23,18 @@ const datasetsToTest = [
 describe('dataset validation in frontend', function () {
   it('redirection test for specstore', async function () {
     this.timeout(600000)
-    const urlLatest = `${process.env.SPECSTORE}/${process.env.OWNERID}/${process.env.REDIRECTION_DATASET}/latest`
+    const urlLatest = `${SPECSTORE}/${OWNERID}/${REDIRECTION_DATASET}/latest`
     let body = await apiStatus(urlLatest)
     const revisionId = body.id.split('/').pop()
-    const urlRevision = `${process.env.SPECSTORE}/${process.env.OWNERID}/${process.env.REDIRECTION_DATASET}/${revisionId}`
+    const urlRevision = `${SPECSTORE}/${OWNERID}/${REDIRECTION_DATASET}/${revisionId}`
     body = await apiStatus(urlRevision)
-    expect(body.spec_contents.meta.dataset).to.equal('redirection-test-dataset')
+    expect(body.spec_contents.meta.dataset).to.equal(`${REDIRECTION_DATASET}`)
     expect(body.state).to.equal('SUCCEEDED')
   })
-  it('redirection works on production', async function () {
+  it(`redirection works on ${DOMAIN}`, async function () {
     this.timeout(1800000)
-    const status = await frontendStatus(datasetsToTest[0],process.env.DOMAIN,newLine)
-    expect(status.name).to.equal('redirection-test-dataset')
+    const status = await frontendStatus(datasetsToTest[0],DOMAIN,newLine)
+    expect(status.name).to.equal(`${REDIRECTION_DATASET}`)
     expect(status.page_status).to.equal('200:OK')
     expect(status.page_title).to.equal('OK')
     expect(status.dataset_title).to.equal('OK')

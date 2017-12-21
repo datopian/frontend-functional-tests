@@ -5,27 +5,34 @@ require('dotenv').config()
 const {apiStatus, specstoreApiUpload, apiAuthChangeUsername, apiAuthPublicKey, apiStatusWithHeaders, apiBitstoreAuthorize, apiBitstoreInfoValidToken, apiBitstoreInfoInvalidToken} = require('../scripts/api.js')
 
 
+const SPECSTORE = process.env.SPECSTORE
+const OWNERID = process.env.OWNERID
+const API_DATASET = 'test-data-package-for-api-test'
+
 describe('specstore service api', function () {
-  it('specstore status works fine', async function () {
-    const url = `${process.env.SPECSTORE}/${process.env.OWNERID}/${process.env.DATAPACKAGE_NAME}/1`
-    const body = await apiStatus(url)
-    expect(body.state).to.equal('SUCCEEDED')
-  })
   it('specstore info for latest revision works fine', async function () {
     this.timeout(120000);
-    const url = `${process.env.SPECSTORE}/${process.env.OWNERID}/${process.env.DATAPACKAGE_NAME}/latest`
+    const url = `${SPECSTORE}/${OWNERID}/${API_DATASET}/latest`
     const body = await apiStatus(url)
-    expect(body.spec_contents.meta.dataset).to.equal('test-data-package-for-api-test')
+    expect(body.spec_contents.meta.dataset).to.equal(`${API_DATASET}`)
+    expect(body.state).to.equal('SUCCEEDED')
+  })
+  it('specstore status works fine', async function () {
+    const urlLatest = `${SPECSTORE}/${OWNERID}/${API_DATASET}/latest`
+    let body = await apiStatus(urlLatest)
+    const revisionId = body.id.split('/').pop()
+    const urlRevision = `${SPECSTORE}/${OWNERID}/${API_DATASET}/${revisionId}`
+    body = await apiStatus(urlRevision)
     expect(body.state).to.equal('SUCCEEDED')
   })
   it('specstore info for successful revision works fine', async function () {
-    const url = `${process.env.SPECSTORE}/${process.env.OWNERID}/${process.env.DATAPACKAGE_NAME}/successful`
+    const url = `${SPECSTORE}/${OWNERID}/${API_DATASET}/successful`
     const body = await apiStatus(url)
-    expect(body.spec_contents.meta.dataset).to.equal('test-data-package-for-api-test')
+    expect(body.spec_contents.meta.dataset).to.equal(`${API_DATASET}`)
     expect(body.state).to.equal('SUCCEEDED')
   })
   it('specstore upload works fine', async function () {
-    const url = `${process.env.SPECSTORE}/upload`
+    const url = `${SPECSTORE}/upload`
     const body = await specstoreApiUpload(url)
     expect(body.success).to.equal(false)
   })
@@ -57,7 +64,7 @@ describe('auth service api', function () {
 
 describe('metastore service api', function () {
   it('metastore search', async function () {
-    const url = `http://api.datahub.io/metastore/search?datahub.ownerid="${process.env.OWNERID}"`
+    const url = `http://api.datahub.io/metastore/search?datahub.ownerid="${OWNERID}"`
     const body = await apiStatusWithHeaders(url)
     expect(body).to.include(`"owner": "examples"`)
   })

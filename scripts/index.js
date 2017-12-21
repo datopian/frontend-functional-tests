@@ -21,6 +21,19 @@ const datapackageJson = async (url, options={}) => {
   return body
 }
 
+// const pageLoadTime = async (url) => {
+//   const browser = await puppeteer.launch()
+//   const page = await browser.newPage()
+//   await page.goto(url, {
+//     networkIdleTimeout: 5000,
+//     waitUntil: 'networkidle',
+//     timeout: 0
+//   })
+//   let metrics = await page.getMetrics()
+//   await browser.close()
+//   return metrics
+// }
+
 const pageContent = async (url, options) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
@@ -39,6 +52,24 @@ const pageContent = async (url, options) => {
   await browser.close()
   return content
 }
+
+
+// const writeToCSV = (statuses) => {
+//   let fields = ["id","name","page_status","page_title","dataset_title","readme","csv_links","csv_preview_links","json_links","zip_links","datapackage_json","total_load_time","script_laod_time","layout_load_time","tables","graphs"]
+//   let toCsv = {
+//       data: statuses,
+//       fields: fields,
+//       hasCSVColumnTitle: false
+//   }  
+//   let csv = json2csv(toCsv) + newLine;
+// 
+//   fs.appendFile('status.csv', csv, err => {
+//       if (err) {
+//         console.log(err)
+//       }
+//       console.log('The data appended to file!');
+//   })
+// }
 
 const frontendStatus = async (dataset,baseUrl,newLine,options) => {
   const statuses = {}
@@ -136,7 +167,15 @@ const frontendStatus = async (dataset,baseUrl,newLine,options) => {
     } else {
       statuses.tables = 'NOT OK'
     }
-  }  
+    
+    // page loading time 		
+    // const loadTime = await pageLoadTime(showcaseUrl)		
+    // statuses.total_load_time = loadTime.TaskDuration		
+    // statuses.script_laod_time = loadTime.ScriptDuration		
+    // statuses.layout_load_time = loadTime.LayoutDuration
+  }
+  // append row into csv file
+  //const appentToStatus = writeToCSV(statuses)
   return statuses
 }
 
