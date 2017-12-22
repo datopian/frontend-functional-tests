@@ -1,6 +1,22 @@
+os: osx
 language: node_js
 node_js:
 - '8'
+matrix:
+  include:
+    - env: DOMAIN=https://datahub.io API=https://api.datahub.io SPECSTORE=http://api.datahub.io/source
+    # - env: DOMAIN=https://testing.datahub.io API=https://api-testing.datahub.io SPECSTORE=http://api-testing.datahub.io/source
 install:
 - npm install
+- npm install -g git+https://github.com/datahq/datahub-cli.git
+before_script:
+- "data push test/fixtures/validate-redirection-dataset --api=$API"
+- sleep 90
 script: npm run test
+env:
+  global:
+    id: examples
+    username: examples
+  TRAVIS_SECURE_ENV_VARS: true
+    
+    

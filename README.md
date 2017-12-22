@@ -30,11 +30,12 @@ Functional testing for frontend and API testing for all services
 
 Tests will be automatically run by travis daily.
 Environmental vairables to set up:
-`DOMAIN` - domain address
+`DOMAIN` - domain address, testing or production
+`SPECSTORE` - spectore API, testing or production
+`API` - API, testing or production
 `AUTH_TOKEN` - Authorization token
 `AUTH_TOKEN_PERMISSION` - Permission token for a service, in our case `rawstore`
 `OWNERID` - ownerid, in this test, we use `examples`
-`DATAPACKAGE_NAME` - data package name, we use sample data package `test-data-package-for-api-test`
 
 It tests API for the following services:
 * specstore status
