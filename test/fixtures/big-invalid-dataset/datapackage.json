@@ -1,0 +1,76 @@
+{
+  "description": "Test big invalid dataset for validation",
+  "keywords": [
+    "Population",
+    "World",
+    "Time series"
+  ],
+  "last_updated": "2012-10-18",
+  "licenses": [
+    {
+      "id": "odc-pddl",
+      "url": "http://opendatacommons.org/licenses/pddl/"
+    }
+  ],
+  "name": "big-dataset-for-testing-frontend-validation",
+  "title": "Big dataset for testing frontend validation",
+  "resources": [
+    {
+      "format": "csv",
+      "name": "population",
+      "path": "data/population.csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "Country Name",
+            "type": "string"
+          },
+          {
+            "name": "Country Code",
+            "type": "string"
+          },
+          {
+            "name": "Year",
+            "type": "year"
+          },
+          {
+            "name": "Value",
+            "type": "number"
+          }
+        ]
+      }
+    }
+  ],
+  "sources": [
+    {
+      "name": "World Bank",
+      "web": "http://data.worldbank.org/indicator/SP.POP.TOTL"
+    }
+  ],
+  "version": "2011",
+  "views": [
+    {
+      "name": "world-population-trend",
+      "title": "World population trend",
+      "specType": "simple",
+      "resources": [
+        {
+          "name": "population",
+          "transform": [
+            {
+              "type": "filter",
+              "expression": "data['Country Code'] === 'WLD'"
+            }
+          ]
+        }
+      ],
+      "spec": {
+        "type": "line",
+        "group": "Year",
+        "series": [
+          "Value"
+        ]
+      }
+    }
+  ]
+}
