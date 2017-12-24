@@ -66,7 +66,7 @@ describe('dataset validation in frontend', function () {
     const revisionUrl = `${SPECSTORE}/${OWNERID}/${datasetsToTest[1].name}/${revisionId}`
     body = await apiStatus(revisionUrl)
     expect(body.spec_contents.meta.dataset).to.equal(`${datasetsToTest[1].name}`)
-    expect(body.state).to.equal('SUCCEEDED')
+    expect(body.state).to.equal('FAILED')
   })
   it(`small invalid dataset with duplicated row on ${DOMAIN}`, async function () {
     this.timeout(1800000)
