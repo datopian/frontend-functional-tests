@@ -13,7 +13,7 @@ before_script:
 - "data push test/fixtures/validate-redirection-dataset --api=$API"
 - "data push test/fixtures/big-invalid-dataset --api=$API"
 - "data push test/fixtures/small-invalid-dataset --api=$API"
-- "data push-flow test/fixtures/processing-dataset --api=$API"
+# - "data push-flow test/fixtures/processing-dataset --api=$API"
 - "data push test/fixtures/api-test-dataset --api=$API"
 - sleep 180
 script: npm run test
