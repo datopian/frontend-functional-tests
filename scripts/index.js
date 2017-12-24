@@ -16,9 +16,14 @@ const checkPage = async (url, options={}) => {
 
 const datapackageJson = async (url, options={}) => {
   const res = await fetch(url, options)
-  let body = await res.text()
-  body = JSON.parse(body)
-  return body
+  if (res.status === 200) {
+    let body = await res.text()
+    body = JSON.parse(body)
+    return body
+  }
+  else {
+    return res
+  }
 }
 
 // const pageLoadTime = async (url) => {
@@ -34,7 +39,7 @@ const datapackageJson = async (url, options={}) => {
 //   return metrics
 // }
 
-const pageContent = async (url, options) => {
+const pageContent = async (url) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.setCookie({
@@ -71,12 +76,12 @@ const pageContent = async (url, options) => {
 //   })
 // }
 
-const frontendStatus = async (dataset,baseUrl,newLine,options) => {
+const frontendStatus = async (dataset,baseUrl,newLine,options,revisionUrl) => {
   const statuses = {}
   const date = new Date()
   statuses.id = date.toISOString()
   statuses.name = dataset.name
-  const showcaseUrl = `${baseUrl}/${dataset.owner}/${dataset.name}`
+  let showcaseUrl = revisionUrl ? revisionUrl : `${baseUrl}/${dataset.owner}/${dataset.name}`
   // page status 
   const page = await checkPage(showcaseUrl, options)
   statuses.page_status = page.status + ':' + page.statusText
@@ -88,10 +93,8 @@ const frontendStatus = async (dataset,baseUrl,newLine,options) => {
       xmlMode: false,
       decodeEntities: true
     })
-    
     let datapackageUrl = `${baseUrl}/${dataset.owner}/${dataset.name}/datapackage.json`
     const dp = await datapackageJson(datapackageUrl, options)
-    
     // page title
     let pageTitle = $('head').find('title').text()
     if (pageTitle.includes(dp.title)) {
@@ -99,7 +102,6 @@ const frontendStatus = async (dataset,baseUrl,newLine,options) => {
     } else {
       statuses.page_title = 'NOT OK'
     }
-    
     //dataset title
     let datasetTitle = $('.showcase-page-header').find('h1').text()
     if (datasetTitle.includes(dp.title)) {
@@ -107,7 +109,6 @@ const frontendStatus = async (dataset,baseUrl,newLine,options) => {
     } else {
       statuses.dataset_title = 'NOT OK'
     }
-    
     // readme
     let readme = $('.inner_container').find('#readme').text()
     if (readme === 'Read me') {
@@ -115,7 +116,6 @@ const frontendStatus = async (dataset,baseUrl,newLine,options) => {
     } else {
       statuses.readme = 'NOT OK'
     }
-    
     // resources link
     const resourcesLink = $('.resource-listing').find('a')
     for (let i = 0; i < resourcesLink.length; i++) {
@@ -139,7 +139,6 @@ const frontendStatus = async (dataset,baseUrl,newLine,options) => {
         }
       }
     }
-    
     // datapackage_json
     const datapackageLink = $('.container').find('.btn-default')
     if ( datapackageLink.text() === 'Datapackage.json') {
@@ -147,7 +146,6 @@ const frontendStatus = async (dataset,baseUrl,newLine,options) => {
       const dpUrl = await checkPage(datapackageUrl, options)
       statuses.datapackage_json = dpUrl.status + ':' + dpUrl.statusText
     }
-    
     // graphs
     try {
       const graphC = $('.svg-container').css()
@@ -159,13 +157,27 @@ const frontendStatus = async (dataset,baseUrl,newLine,options) => {
     } catch (e) {
       statuses.graphs = 'NOT OK'
     }
-    
     // tables
     const table = $('.htCore').find('tr').length
     if (table > 2) {
       statuses.tables = 'OK'
     } else {
       statuses.tables = 'NOT OK'
+    }
+    // validation status report
+    const validationStatus = $('.alert-danger').find('h3').text()
+    if (validationStatus.length > 10) {
+      statuses.validation_status = 'OK'
+    } else {
+      statuses.validation_status = 'NOT OK'
+    }
+
+    // validation status by goodtables ui
+    const goodtablesReport = $('.goodtables-ui-report').find('a').text()
+    if (goodtablesReport.includes('Error details')) {
+      statuses.goodtables_report = 'OK'
+    } else {
+      statuses.goodtables_report = 'NOT OK'
     }
     
     // page loading time 		
