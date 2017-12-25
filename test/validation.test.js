@@ -45,7 +45,12 @@ describe('dataset validation in frontend', function () {
   })
   it(`redirection works on ${DOMAIN}`, async function () {
     this.timeout(1800000)
-    const status = await frontendStatus(datasetsToTest[0],DOMAIN,newLine)
+    const options = {
+      headers: {
+        cookie: `jwt=${process.env.AUTH_TOKEN}`
+      }
+    }
+    const status = await frontendStatus(datasetsToTest[0],DOMAIN,newLine,options)
     expect(status.name).to.equal(`${datasetsToTest[0].name}`)
     expect(status.page_status).to.equal('200:OK')
     expect(status.page_title).to.equal('OK')

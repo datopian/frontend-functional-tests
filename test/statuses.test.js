@@ -14,8 +14,8 @@ const datasetsToTest = [
     "name": "finance-vix"
   },
   {
-    "owner": "Mikanebu",
-    "name": "finance-vix-private"
+    "owner": "examples",
+    "name": "redirection-test-dataset"
   }
 ]
 
@@ -23,7 +23,7 @@ describe('testing public dataset, in our case finance-vix', function () {
   it(`finance-vix works on ${DOMAIN}`, async function () {
     this.timeout(180000)
     const status = await frontendStatus(datasetsToTest[0],DOMAIN,newLine)
-    expect(status.name).to.equal('finance-vix')
+    expect(status.name).to.equal(`${datasetsToTest[0].name}`)
     expect(status.page_status).to.equal('200:OK')
     expect(status.page_title).to.equal('OK')
     expect(status.dataset_title).to.equal('OK')
@@ -46,7 +46,7 @@ describe('testing private dataset, in our case finance-vix', function () {
       }
     }
     const status = await frontendStatus(datasetsToTest[1],DOMAIN,newLine,options)
-    expect(status.name, 'finance-vix-private')
+    expect(status.name, `${datasetsToTest[1].name}`)
     expect(status.page_status).to.equal('200:OK')
     expect(status.page_title).to.equal('OK')
     expect(status.dataset_title).to.equal('OK')
