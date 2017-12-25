@@ -101,7 +101,7 @@ describe('dataset validation in frontend', function () {
     expect(status.name).to.equal(`${datasetsToTest[2].name}`)
     expect(status.page_status).to.equal('404:Not Found')
   })
-  it(`big invalid dataset on revision ${DOMAIN}`, async function () {
+  it.only(`big invalid dataset on revision ${DOMAIN}`, async function () {
     this.timeout(1800000)
     const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[2].name}/latest`
     let body = await apiStatus(urlLatest)
@@ -120,7 +120,7 @@ describe('dataset validation in frontend', function () {
     expect(status.tables).to.equal('NOT OK')
     expect(status.graphs).to.equal('NOT OK')
     expect(status.validation_status).to.equal('OK')
-    expect(status.goodtables_report).to.equal('NOT OK')
+    expect(status.goodtables_report).to.equal('OK')
   })
   it(`processing dataset on ${SPECSTORE}`, async function () {
     this.timeout(600000)
@@ -157,6 +157,6 @@ describe('dataset validation in frontend', function () {
     expect(status.tables).to.equal('NOT OK')
     expect(status.graphs).to.equal('NOT OK')
     expect(status.validation_status).to.equal('OK')
-    expect(status.goodtables_report).to.equal('NOT OK')
+    expect(status.goodtables_report).to.equal('OK')
   })
 })

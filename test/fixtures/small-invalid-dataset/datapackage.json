@@ -27,7 +27,7 @@
           },
           {
             "name": "Country Code",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "Year",
