@@ -10,7 +10,7 @@ install:
 - npm install
 - npm install -g git+https://github.com/datahq/datahub-cli.git
 before_script:
-- "data push test/fixtures/validate-redirection-dataset --api=$API"
+- "data push test/fixtures/validate-redirection-dataset --api=$API" --private
 - sleep 60
 - "data push test/fixtures/big-invalid-dataset --api=$API"
 - sleep 60
