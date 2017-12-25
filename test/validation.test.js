@@ -101,7 +101,7 @@ describe('dataset validation in frontend', function () {
     expect(status.name).to.equal(`${datasetsToTest[2].name}`)
     expect(status.page_status).to.equal('404:Not Found')
   })
-  it.only(`big invalid dataset on revision ${DOMAIN}`, async function () {
+  it(`big invalid dataset on revision ${DOMAIN}`, async function () {
     this.timeout(1800000)
     const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[2].name}/latest`
     let body = await apiStatus(urlLatest)
