@@ -48,7 +48,7 @@ const pageContent = async (url) => {
     url: url
   })
   await page.goto(url, {
-    networkIdleTimeout: 50000,
+    networkIdleTimeout: 70000,
     networkIdleInflight: 35,
     waitUntil: 'networkidle',
     timeout: 0
