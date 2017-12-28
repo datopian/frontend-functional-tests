@@ -1,0 +1,49 @@
+meta:
+  dataset: processing-dataset
+  findability: unlisted
+  owner: examples
+  ownerid: examples
+  version: 1
+inputs:
+- kind: datapackage
+  url: https://raw.githubusercontent.com/datasets/bond-yields-us-10y/master/.datahub/datapackage.json
+  parameters:
+    resource-mapping:
+      monthly: http://www.federalreserve.gov/datadownload/Output.aspx?rel=H15&series=0809abf197c17f1ff0b2180fe7015cc3&lastObs=&from=&to=&filetype=csv&label=include&layout=seriescolumn
+    descriptor:
+      name: processing-dataset
+      title: Processing dataset for frontend validation
+      version: 0.1.0
+      license: PDDL-1.0
+      sources:
+        -
+          name: Federal Reserve (Release H.15)
+          path: http://www.federalreserve.gov/releases/h15/data.htm
+          title: Federal Reserve (Release H.15)
+      resources:
+        -
+          name: monthly
+          path: data/monthly.csv
+          title: Annual Market yield on U.S. Treasury securities at 10-year constant maturity, quoted on investment basis. (Monthly granuarlity)
+          format: csv
+          mediatype: text/csv
+          schema:
+            fields:
+              -
+                name: Date
+                type: date
+                description: Date in ISO 8601
+                format: any
+              -
+                name: Rate
+                type: number
+                description: Percent per year            
+processing:
+  -
+    input: monthly
+    tabulator:
+      skip_rows: test
+      headers:
+        - Date
+        - Rate
+    output: monthly

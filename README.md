@@ -51,3 +51,21 @@ It tests API for the following services:
 * bitstore(rawstore) get authorized upload URL
 * bitstore(rawstore) get information regarding the datastore
 
+## Validation test 
+
+Validation test is located in `test/validation.test.js`, and it covers the following cases:
+* small dataset
+  * cause CSV to fail after validation
+  * multiple resources
+  * datasets that fail validation but not pipeline(duplicated row)
+  * multiple errors per file
+  * public(unlisted) 
+* big dataset
+  * cause CSV to fail before validation
+  * Different validation errors(invalid metadata and data)
+* processing dataset by providing invalid flow.yml
+* redirection dataset
+  * private dataset
+* all specstore statuses for above mentioned datasets
+
+

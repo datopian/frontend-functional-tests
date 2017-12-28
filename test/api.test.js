@@ -71,7 +71,7 @@ describe('metastore service api', function () {
   it('metastore search events', async function () {
     const url = `http://api.datahub.io/metastore/search/events`
     const body = await apiStatusWithHeaders(url)
-    expect(body).to.include(`"dataset": "finance-vix"`)
+    expect(body).to.include(`"dataset": "redirection-test-dataset"`)
   })
 })
 
