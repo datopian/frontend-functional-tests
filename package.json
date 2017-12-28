@@ -27,7 +27,6 @@
   },
   "devDependencies": {
     "ava": "^0.24.0",
-    "babel-register": "^6.18.0",
-    "chai": "^4.1.2"
+    "babel-register": "^6.18.0"
   }
 }
