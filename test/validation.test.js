@@ -1,8 +1,7 @@
-'use strict'
-
 require('dotenv').config()
 
-const expect = require('chai').expect;
+const test = require('ava')
+
 const {apiStatus} = require('../scripts/api.js')
 const {frontendStatus} = require('../scripts/index.js')
 
@@ -31,137 +30,124 @@ const datasetsToTest = [
 ]
 
 
-describe('dataset validation in frontend', function () {
-  it('redirection test for specstore', async function () {
-    this.timeout(600000)
-    const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[0].name}/latest`
-    let body = await apiStatus(urlLatest)
-    const revisionId = body.id.split('/').pop()
-    const revisionUrl = `${SPECSTORE}/${OWNERID}/${datasetsToTest[0].name}/${revisionId}`
-    body = await apiStatus(revisionUrl)
-    expect(body.spec_contents.meta.dataset).to.equal(`${datasetsToTest[0].name}`)
-    
-    expect(body.state).to.equal('SUCCEEDED')
-  })
-  it(`redirection works on ${DOMAIN}`, async function () {
-    this.timeout(1800000)
-    const options = {
-      headers: {
-        cookie: `jwt=${process.env.AUTH_TOKEN}`
-      }
+test('redirection test for specstore', async t => {
+  const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[0].name}/latest`
+  let body = await apiStatus(urlLatest)
+  const revisionId = body.id.split('/').pop()
+  const revisionUrl = `${SPECSTORE}/${OWNERID}/${datasetsToTest[0].name}/${revisionId}`
+  body = await apiStatus(revisionUrl)
+  t.is(body.spec_contents.meta.dataset, `${datasetsToTest[0].name}`)
+  t.is(body.state, 'SUCCEEDED')
+})
+test(`redirection works on ${DOMAIN}`, async t => {
+  const options = {
+    headers: {
+      cookie: `jwt=${process.env.AUTH_TOKEN}`
     }
-    const status = await frontendStatus(datasetsToTest[0],DOMAIN,newLine,options)
-    expect(status.name).to.equal(`${datasetsToTest[0].name}`)
-    expect(status.page_status).to.equal('200:OK')
-    expect(status.page_title).to.equal('OK')
-    expect(status.dataset_title).to.equal('OK')
-    expect(status.readme).to.equal('OK')
-    expect(status.csv_links).to.equal('200:OK')
-    expect(status.json_links).to.equal('200:OK')
-    expect(status.zip_links).to.equal('200:OK')
-    expect(status.datapackage_json).to.equal('200:OK')
-    expect(status.tables).to.equal('OK')
-    expect(status.graphs).to.equal('OK')
-  })
-  it(`small invalid dataset with duplicated row on ${SPECSTORE}`, async function () {
-    this.timeout(600000)
-    const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[1].name}/latest`
-    let body = await apiStatus(urlLatest)
-    const revisionId = body.id.split('/').pop()
-    const revisionUrl = `${SPECSTORE}/${OWNERID}/${datasetsToTest[1].name}/${revisionId}`
-    body = await apiStatus(revisionUrl)
-    expect(body.spec_contents.meta.dataset).to.equal(`${datasetsToTest[1].name}`)
-    expect(body.state).to.equal('FAILED')
-  })
-  it(`small invalid dataset with duplicated row on ${DOMAIN}`, async function () {
-    this.timeout(1800000)
-    const status = await frontendStatus(datasetsToTest[1],DOMAIN,newLine)
-    expect(status.name).to.equal(`${datasetsToTest[1].name}`)
-    expect(status.page_status).to.equal('200:OK')
-    expect(status.page_title).to.equal('OK')
-    expect(status.dataset_title).to.equal('OK')
-    expect(status.readme).to.equal('OK')
-    expect(status.csv_links).to.equal('200:OK')
-    expect(status.json_links).to.equal('200:OK')
-    expect(status.zip_links).to.equal('200:OK')
-    expect(status.datapackage_json).to.equal('200:OK')
-    expect(status.tables).to.equal('OK')
-    expect(status.graphs).to.equal('OK')
-    expect(status.validation_status).to.equal('OK')
-    expect(status.goodtables_report).to.equal('OK')
-  })
-  it(`big invalid dataset on ${SPECSTORE}`, async function () {
-    this.timeout(600000)
-    const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[2].name}/latest`
-    let body = await apiStatus(urlLatest)
-    const revisionId = body.id.split('/').pop()
-    const revisionUrl = `${SPECSTORE}/${OWNERID}/${datasetsToTest[2].name}/${revisionId}`
-    body = await apiStatus(revisionUrl)
-    expect(body.spec_contents.meta.dataset).to.equal(`${datasetsToTest[2].name}`)
-    expect(body.state).to.equal('FAILED')
-  })
-  it(`big invalid dataset on latest ${DOMAIN}`, async function () {
-    this.timeout(1800000)
-    const status = await frontendStatus(datasetsToTest[2],DOMAIN,newLine)
-    expect(status.name).to.equal(`${datasetsToTest[2].name}`)
-    expect(status.page_status).to.equal('404:Not Found')
-  })
-  it(`big invalid dataset on revision ${DOMAIN}`, async function () {
-    this.timeout(1800000)
-    const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[2].name}/latest`
-    let body = await apiStatus(urlLatest)
-    const options = {
-      headers: {
-        cookie: `jwt=${process.env.AUTH_TOKEN}`
-      }
+  }
+  const status = await frontendStatus(datasetsToTest[0],DOMAIN,newLine,options)
+  t.is(status.name, `${datasetsToTest[0].name}`)
+  t.is(status.page_status, '200:OK')
+  t.is(status.page_title, 'OK')
+  t.is(status.dataset_title, 'OK')
+  t.is(status.readme, 'OK')
+  t.is(status.csv_links, '200:OK')
+  t.is(status.json_links, '200:OK')
+  t.is(status.zip_links, '200:OK')
+  t.is(status.datapackage_json, '200:OK')
+  t.is(status.tables, 'OK')
+  t.is(status.graphs, 'OK')
+})
+test(`small invalid dataset with duplicated row on ${SPECSTORE}`, async t => {
+  const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[1].name}/latest`
+  let body = await apiStatus(urlLatest)
+  const revisionId = body.id.split('/').pop()
+  const revisionUrl = `${SPECSTORE}/${OWNERID}/${datasetsToTest[1].name}/${revisionId}`
+  body = await apiStatus(revisionUrl)
+  t.is(body.spec_contents.meta.dataset, `${datasetsToTest[1].name}`)
+  t.is(body.state, 'FAILED')
+})
+test(`small invalid dataset with duplicated row on ${DOMAIN}`, async t => {
+  const status = await frontendStatus(datasetsToTest[1],DOMAIN,newLine)
+  t.is(status.name, `${datasetsToTest[1].name}`)
+  t.is(status.page_status, '200:OK')
+  t.is(status.page_title, 'OK')
+  t.is(status.dataset_title, 'OK')
+  t.is(status.readme, 'OK')
+  t.is(status.csv_links, '200:OK')
+  t.is(status.json_links, '200:OK')
+  t.is(status.zip_links, '200:OK')
+  t.is(status.datapackage_json, '200:OK')
+  t.is(status.tables, 'OK')
+  t.is(status.graphs, 'OK')
+  t.is(status.validation_status, 'OK')
+  t.is(status.goodtables_report, 'OK')
+})
+test(`big invalid dataset on ${SPECSTORE}`, async t => {
+  const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[2].name}/latest`
+  let body = await apiStatus(urlLatest)
+  const revisionId = body.id.split('/').pop()
+  const revisionUrl = `${SPECSTORE}/${OWNERID}/${datasetsToTest[2].name}/${revisionId}`
+  body = await apiStatus(revisionUrl)
+  t.is(body.spec_contents.meta.dataset, `${datasetsToTest[2].name}`)
+  t.is(body.state, 'FAILED')
+})
+test(`big invalid dataset on latest ${DOMAIN}`, async t => {
+  const status = await frontendStatus(datasetsToTest[2],DOMAIN,newLine)
+  t.is(status.name, `${datasetsToTest[2].name}`)
+  t.is(status.page_status, '404:Not Found')
+})
+test(`big invalid dataset on revision ${DOMAIN}`, async t => {
+  const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[2].name}/latest`
+  let body = await apiStatus(urlLatest)
+  const options = {
+    headers: {
+      cookie: `jwt=${process.env.AUTH_TOKEN}`
     }
-    const revisionId = body.id.split('/').pop()
-    const revisionUrl = `${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/v/${revisionId}`
-    const status = await frontendStatus(datasetsToTest[2],DOMAIN,newLine,options,revisionUrl)
-    expect(status.name).to.equal(`${datasetsToTest[2].name}`)
-    expect(status.page_status).to.equal('200:OK')
-    expect(status.readme).to.equal('OK')
-    expect(status.datapackage_json).to.equal('404:Not Found')
-    expect(status.tables).to.equal('NOT OK')
-    expect(status.graphs).to.equal('NOT OK')
-    expect(status.validation_status).to.equal('OK')
-    expect(status.goodtables_report).to.equal('OK')
-  })
-  it(`processing dataset on ${SPECSTORE}`, async function () {
-    this.timeout(600000)
-    const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[3].name}/latest`
-    let body = await apiStatus(urlLatest)
-    const revisionId = body.id.split('/').pop()
-    const revisionUrl = `${SPECSTORE}/${OWNERID}/${datasetsToTest[3].name}/${revisionId}`
-    body = await apiStatus(revisionUrl)
-    expect(body.spec_contents.meta.dataset).to.equal(`${datasetsToTest[3].name}`)
-    expect(body.state).to.equal('FAILED')
-  })
-  it(`processing dataset on latest ${DOMAIN}`, async function () {
-    this.timeout(1800000)
-    const status = await frontendStatus(datasetsToTest[3],DOMAIN,newLine)
-    expect(status.name).to.equal(`${datasetsToTest[3].name}`)
-    expect(status.page_status).to.equal('404:Not Found')
-  })
-  it(`processing dataset on revision ${DOMAIN}`, async function () {
-    this.timeout(1800000)
-    const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[3].name}/latest`
-    let body = await apiStatus(urlLatest)
-    const options = {
-      headers: {
-        cookie: `jwt=${process.env.AUTH_TOKEN}`
-      }
+  }
+  const revisionId = body.id.split('/').pop()
+  const revisionUrl = `${DOMAIN}/${datasetsToTest[2].owner}/${datasetsToTest[2].name}/v/${revisionId}`
+  const status = await frontendStatus(datasetsToTest[2],DOMAIN,newLine,options,revisionUrl)
+  t.is(status.name, `${datasetsToTest[2].name}`)
+  t.is(status.page_status, '200:OK')
+  t.is(status.readme, 'OK')
+  t.is(status.datapackage_json, '404:Not Found')
+  t.is(status.tables, 'NOT OK')
+  t.is(status.graphs, 'NOT OK')
+  t.is(status.validation_status, 'OK')
+  t.is(status.goodtables_report, 'OK')
+})
+test(`processing dataset on ${SPECSTORE}`, async t => {
+  const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[3].name}/latest`
+  let body = await apiStatus(urlLatest)
+  const revisionId = body.id.split('/').pop()
+  const revisionUrl = `${SPECSTORE}/${OWNERID}/${datasetsToTest[3].name}/${revisionId}`
+  body = await apiStatus(revisionUrl)
+  t.is(body.spec_contents.meta.dataset, `${datasetsToTest[3].name}`)
+  t.is(body.state, 'FAILED')
+})
+test(`processing dataset on latest ${DOMAIN}`, async t => {
+  const status = await frontendStatus(datasetsToTest[3],DOMAIN,newLine)
+  t.is(status.name, `${datasetsToTest[3].name}`)
+  t.is(status.page_status, '404:Not Found')
+})
+test(`processing dataset on revision ${DOMAIN}`, async t => {
+  const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[3].name}/latest`
+  let body = await apiStatus(urlLatest)
+  const options = {
+    headers: {
+      cookie: `jwt=${process.env.AUTH_TOKEN}`
     }
-    const revisionId = body.id.split('/').pop()
-    const revisionUrl = `${DOMAIN}/${datasetsToTest[3].owner}/${datasetsToTest[3].name}/v/${revisionId}`
-    const status = await frontendStatus(datasetsToTest[3],DOMAIN,newLine,options,revisionUrl)
-    expect(status.name).to.equal(`${datasetsToTest[3].name}`)
-    expect(status.page_status).to.equal('200:OK')
-    expect(status.readme).to.equal('OK')
-    expect(status.datapackage_json).to.equal('404:Not Found')
-    expect(status.tables).to.equal('NOT OK')
-    expect(status.graphs).to.equal('NOT OK')
-    expect(status.validation_status).to.equal('OK')
-    expect(status.goodtables_report).to.equal('OK')
-  })
+  }
+  const revisionId = body.id.split('/').pop()
+  const revisionUrl = `${DOMAIN}/${datasetsToTest[3].owner}/${datasetsToTest[3].name}/v/${revisionId}`
+  const status = await frontendStatus(datasetsToTest[3],DOMAIN,newLine,options,revisionUrl)
+  t.is(status.name, `${datasetsToTest[3].name}`)
+  t.is(status.page_status, '200:OK')
+  t.is(status.readme, 'OK')
+  t.is(status.datapackage_json, '404:Not Found')
+  t.is(status.tables, 'NOT OK')
+  t.is(status.graphs, 'NOT OK')
+  t.is(status.validation_status, 'OK')
+  t.is(status.goodtables_report, 'OK')
 })
