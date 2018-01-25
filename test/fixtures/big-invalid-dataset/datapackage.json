@@ -44,6 +44,7 @@
   "sources": [
     {
       "name": "World Bank",
+      "title": "World Bank",
       "web": "http://data.worldbank.org/indicator/SP.POP.TOTL"
     }
   ],
