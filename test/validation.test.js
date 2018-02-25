@@ -117,7 +117,7 @@ test(`big invalid dataset on revision ${DOMAIN}`, async t => {
   t.is(status.validation_status, 'OK')
   t.is(status.goodtables_report, 'OK')
 })
-test(`processing dataset on ${SPECSTORE}`, async t => {
+test.skip(`processing dataset on ${SPECSTORE}`, async t => {
   const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[3].name}/latest`
   let body = await apiStatus(urlLatest)
   const revisionId = body.id.split('/').pop()
@@ -126,12 +126,12 @@ test(`processing dataset on ${SPECSTORE}`, async t => {
   t.is(body.spec_contents.meta.dataset, `${datasetsToTest[3].name}`)
   t.is(body.state, 'FAILED')
 })
-test(`processing dataset on latest ${DOMAIN}`, async t => {
+test.skip(`processing dataset on latest ${DOMAIN}`, async t => {
   const status = await frontendStatus(datasetsToTest[3],DOMAIN,newLine)
   t.is(status.name, `${datasetsToTest[3].name}`)
   t.is(status.page_status, '404:Not Found')
 })
-test(`processing dataset on revision ${DOMAIN}`, async t => {
+test.skip(`processing dataset on revision ${DOMAIN}`, async t => {
   const urlLatest = `${SPECSTORE}/${OWNERID}/${datasetsToTest[3].name}/latest`
   let body = await apiStatus(urlLatest)
   const options = {
