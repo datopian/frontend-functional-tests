@@ -23,8 +23,6 @@ before_script:
 script: npm run test
 env:
   global:
-    id: examples
-    username: examples
+    id: test
+    username: test
   TRAVIS_SECURE_ENV_VARS: true
-    
-    
