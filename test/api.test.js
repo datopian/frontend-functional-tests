@@ -32,7 +32,7 @@ test('specstore info for successful revision works fine', async t => {
 test('specstore upload works fine', async t => {
   const url = `${SPECSTORE}/upload`
   const body = await specstoreApiUpload(url)
-  t.is(body.success, false)
+  t.true(body.includes('405 Method Not Allowed'), true)
 })
 
 test('auth permission for a service', async t => {
@@ -49,7 +49,7 @@ test('auth check an authentication token validity with valid token', async t => 
 test('auth change the username', async t => {
   const url = `http://api.datahub.io/auth/update?jwt=test1&username=test1`
   const body = await apiAuthChangeUsername(url)
-  t.is(body.success, false)
+  t.true(body.includes('405 Method Not Allowed'))
 })
 test('auth receive authorization public key', async t => {
   const url = `http://api.datahub.io/auth/public-key`
@@ -60,7 +60,7 @@ test('auth receive authorization public key', async t => {
 test('metastore search', async t => {
   const url = `http://api.datahub.io/metastore/search?datahub.ownerid="${OWNERID}"`
   const body = await apiStatusWithHeaders(url)
-  t.true(body.includes(`"owner": "examples"`))
+  t.true(body.includes(`"owner": "test"`))
 })
 test('metastore search events', async t => {
   const url = `http://api.datahub.io/metastore/search/events`
@@ -77,8 +77,8 @@ test('resolver username to userid', async t => {
 test('bitstore(rawstore) get authorized upload URL', async t => {
   const url = `http://api.datahub.io/rawstore/authorize`
   const res = await apiBitstoreAuthorize(url)
-  t.is(res.statusText, 'BAD REQUEST')
-  t.is(res.status, 400)
+  t.is(res.statusText, 'METHOD NOT ALLOWED')
+  t.is(res.status, 405)
 })
 test('bitstore(rawstore) get information regarding the datastore with invalid token', async t => {
   const url = `http://api.datahub.io/rawstore/info`

@@ -27,7 +27,6 @@ const specstoreApiUpload = async (url) => {
     body: JSON.stringify({a: 1, b: 2})
   })
   let body = await res.text()
-  body = JSON.parse(body)
   return body
 }
 
@@ -38,7 +37,6 @@ const apiAuthChangeUsername = async (url) => {
     method: "POST",
   })
   let body = await res.text()
-  body = JSON.parse(body)
   return body
 }
 

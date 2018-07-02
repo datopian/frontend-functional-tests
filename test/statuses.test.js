@@ -13,7 +13,7 @@ const datasetsToTest = [
     "name": "finance-vix"
   },
   {
-    "owner": "examples",
+    "owner": "test",
     "name": "redirection-test-dataset"
   }
 ]

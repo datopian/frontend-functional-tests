@@ -65,9 +65,9 @@ const pageContent = async (url) => {
 //       data: statuses,
 //       fields: fields,
 //       hasCSVColumnTitle: false
-//   }  
+//   }
 //   let csv = json2csv(toCsv) + newLine;
-// 
+//
 //   fs.appendFile('status.csv', csv, err => {
 //       if (err) {
 //         console.log(err)
@@ -82,7 +82,7 @@ const frontendStatus = async (dataset,baseUrl,newLine,options,revisionUrl) => {
   statuses.id = date.toISOString()
   statuses.name = dataset.name
   let showcaseUrl = revisionUrl ? revisionUrl : `${baseUrl}/${dataset.owner}/${dataset.name}`
-  // page status 
+  // page status
   const page = await checkPage(showcaseUrl, options)
   statuses.page_status = page.status + ':' + page.statusText
   if (page.status === 200) {
@@ -148,8 +148,8 @@ const frontendStatus = async (dataset,baseUrl,newLine,options,revisionUrl) => {
     }
     // graphs
     try {
-      const graphC = $('.svg-container').css()
-      if (graphC.position === 'relative' && graphC.width === '670px' && graphC.height === '450px') {
+      const graph = $('#plotly0') || $('#vega0')
+      if (graph) {
         statuses.graphs = 'OK'
       } else {
         statuses.graphs = 'NOT OK'
@@ -179,11 +179,11 @@ const frontendStatus = async (dataset,baseUrl,newLine,options,revisionUrl) => {
     } else {
       statuses.goodtables_report = 'NOT OK'
     }
-    
-    // page loading time 		
-    // const loadTime = await pageLoadTime(showcaseUrl)		
-    // statuses.total_load_time = loadTime.TaskDuration		
-    // statuses.script_laod_time = loadTime.ScriptDuration		
+
+    // page loading time
+    // const loadTime = await pageLoadTime(showcaseUrl)
+    // statuses.total_load_time = loadTime.TaskDuration
+    // statuses.script_laod_time = loadTime.ScriptDuration
     // statuses.layout_load_time = loadTime.LayoutDuration
   }
   // append row into csv file
